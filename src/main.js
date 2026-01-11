@@ -1,3 +1,4 @@
+import { Projects } from './components/Projects.js';
 import './style.css';
 import { Header } from './components/Header.js';
 import { Hero } from './components/Hero.js';
@@ -15,6 +16,7 @@ document.querySelector('#app').innerHTML = `
   ${Hero()}
   ${Services()}
   ${WhatsAppButton()}
+  ${Projects()}
 `;
 
 // Animações GSAP
