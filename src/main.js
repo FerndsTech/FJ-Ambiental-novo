@@ -5,6 +5,7 @@ import { Hero } from './components/Hero.js';
 import { Clients } from './components/Clients.js'; // Prova Social
 import { Services } from './components/Services.js';
 import { Projects } from './components/Projects.js'; // Portfólio
+import { Footer } from './components/Footer.js';
 import { WhatsAppButton } from './components/WhatsAppButton.js';
 
 // Importação das Ferramentas de Animação
@@ -18,7 +19,7 @@ gsap.registerPlugin(ScrollTrigger);
 document.querySelector('#app').innerHTML = `
   ${Header()}
   ${Hero()}
-  ${Clients()}          ${Services()}         ${Projects()}         ${WhatsAppButton()}   `;
+  ${Clients()}          ${Services()}         ${Projects()}         ${WhatsAppButton()}      ${Footer()} `;
 
 
 // A. Hero Section (Entrada triunfal do texto)
