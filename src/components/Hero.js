@@ -12,7 +12,7 @@ export function Hero() {
           style="background-image: url('${bgImage}');"
         ></div>
 
-        <div class="absolute inset-0 bg-gradient-to-r from-slate-50 via-slate-50/90 to-transparent z-10"></div>
+        <div class="absolute inset-0 bg-linear-to-r from-slate-50 via-slate-50/90 to-transparent z-10"></div>
 
         <div class="relative z-20 container mx-auto px-6 h-full flex flex-col justify-center lg:flex-row lg:items-center">
           
