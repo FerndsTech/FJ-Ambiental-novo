@@ -21,12 +21,6 @@ export function Clients() {
       
       <div class="relative w-full overflow-hidden">
         
-        <div class="text-center mb-8">
-          <p class="text-slate-500 text-xs font-bold uppercase tracking-[0.2em] opacity-70">
-            Empresas que confiam em nosso rigor técnico
-          </p>
-        </div>
-        
         <div class="relative w-full flex overflow-hidden">
           
           <div class="absolute top-0 left-0 h-full w-24 md:w-40 bg-linear-to-r from-[#e2e8f0] via-[#e2e8f0]/80 to-transparent z-10 pointer-events-none"></div>
