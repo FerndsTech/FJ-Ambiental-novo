@@ -3,13 +3,18 @@
 /* --- 1. Configurações Globais --- */
 html {
   scroll-behavior: smooth;
+
+  /* evita que o header cubra o topo ao clicar em âncoras */
+  scroll-padding-top: 110px;
 }
 
 body {
   font-family: 'Inter', sans-serif;
-  /* MUDANÇA: Fundo cinza claro para criar contraste com o "Cartão" do Hero */
-  background-color: #e2e8f0; 
-  color: #0f172a; 
+
+  /* Base clara (branco / variação leve) */
+  background-color: #ffffff;
+  color: #0f172a;
+
   overflow-x: hidden;
 }
 
@@ -22,25 +27,32 @@ img, svg {
 
 /* --- 2. Animações (Marquee) --- */
 @keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
 .animate-marquee {
-  animation: marquee 40s linear infinite; /* Aumentei o tempo p/ ser mais suave */
+  animation: marquee 35s linear infinite;
   width: max-content;
+  will-change: transform;
+  transform: translate3d(0,0,0);
 }
 
 .animate-marquee:hover {
   animation-play-state: paused;
 }
 
-/* --- 3. Utilitários Visuais --- */
-/* Scrollbar estilo pílula */
+/* Respeita usuários que preferem menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-marquee { animation: none !important; }
+}
+
+/* --- 3. Scrollbar estilo pílula (base clara) --- */
 ::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: #e2e8f0; }
+::-webkit-scrollbar-track { background: #ffffff; }
 ::-webkit-scrollbar-thumb {
   background: #94a3b8;
   border-radius: 9999px;
-  border: 3px solid #e2e8f0;
+  border: 3px solid #ffffff;
 }

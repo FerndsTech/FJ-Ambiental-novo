@@ -5,7 +5,7 @@ export function Hero() {
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '5571999999999';
 
   return `
-    <section id="home" class="relative w-full min-h-screen flex flex-col justify-center bg-slate-950 p-4 md:p-6">
+    <section id="home" class="relative w-full min-h-screen flex flex-col justify-center bg-white p-4 md:p-6">
       
       <div class="relative w-full min-h-[85vh] h-full rounded-[40px] overflow-hidden shadow-2xl isolate ring-1 ring-slate-800 transform-gpu">
         
@@ -15,10 +15,10 @@ export function Hero() {
           muted 
           loop 
           playsinline
-          preload="auto"
+          preload="metadata"
           poster="${heroPoster}"
           /* object-position: center bottom; -> Foca na parte de baixo (nos círculos) */
-          style="object-fit: cover; object-position: center bottom; min-width: 100%; min-height: 100%; position: absolute;" 
+          style="object-fit: cover; object-position: center bottom;" 
         >
           
           <source src="/img/video-hero.mp4" type="video/mp4">
@@ -49,7 +49,7 @@ export function Hero() {
                  class="group inline-flex items-center justify-center bg-emerald-600 text-white px-8 py-4 rounded-full text-base font-bold transition-all hover:bg-emerald-500 hover:scale-105 hover:shadow-[0_0_20px_rgba(52,211,153,0.4)]">
                  Entre em contato
               </a>
-              <a href="#projetos" 
+              <a href="#projets" 
                  class="inline-flex items-center justify-center bg-white/5 backdrop-blur-md border border-white/10 text-white px-8 py-4 rounded-full text-base font-bold transition-all hover:bg-white/10 hover:border-emerald-500/50">
                  Ver Projetos
               </a>

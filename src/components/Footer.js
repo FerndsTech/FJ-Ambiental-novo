@@ -23,7 +23,7 @@ export function Footer() {
               <nav class="flex flex-col gap-3">
                 <a href="#home" class="text-slate-400 hover:text-white text-sm transition-colors w-fit">Início</a>
                 <a href="#services" class="text-slate-400 hover:text-white text-sm transition-colors w-fit">Serviços</a>
-                <a href="#projetos" class="text-slate-400 hover:text-white text-sm transition-colors w-fit">Projetos</a>
+                <a href="#projets" class="text-slate-400 hover:text-white text-sm transition-colors w-fit">Projetos</a>
               </nav>
             </div>
 

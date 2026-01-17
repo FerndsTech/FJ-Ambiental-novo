@@ -18,7 +18,7 @@ export function Services() {
   ];
 
   return `
-    <section id="servicos" class="relative py-24 bg-slate-900 overflow-hidden">
+    <section id="services" class="relative py-24 bg-slate-900 overflow-hidden">
       
       <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 

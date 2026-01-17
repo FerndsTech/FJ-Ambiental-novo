@@ -2,25 +2,32 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}", /* Isso garante que ele leia Hero.js, Clients.js, etc */
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ["Inter", "sans-serif"],
       },
+
+      // Não sobrescreva slate/emerald padrão.
+      // Crie tokens da marca (brand) para usar de forma consistente.
       colors: {
-        // Definindo as cores da marca para garantir
-        emerald: {
-          400: '#34d399',
-          500: '#10b981',
-          600: '#059669',
+        brand: {
+          DEFAULT: "#059669", // verde principal (próximo do emerald-600)
+          50:  "#ecfdf5",
+          100: "#d1fae5",
+          200: "#a7f3d0",
+          300: "#6ee7b7",
+          400: "#34d399",
+          500: "#10b981",
+          600: "#059669",
+          700: "#047857",
+          800: "#065f46",
+          900: "#064e3b",
         },
-        slate: {
-          900: '#0f172a',
-        }
-      }
+      },
     },
   },
   plugins: [],
-}
+};
