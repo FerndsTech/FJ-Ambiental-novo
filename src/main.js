@@ -8,14 +8,12 @@ import { Services } from './components/Services.js';
 import { Projects } from './components/Projects.js';
 import { Footer } from './components/Footer.js';
 import { WhatsAppButton } from './components/WhatsAppButton.js';
-
-// Importação das Ferramentas de Animação
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Montar o HTML (ordem pensada para conversão)
+// Montar o HTML
 document.querySelector('#app').innerHTML = `
   ${Header()}
   ${Hero()}
@@ -26,11 +24,12 @@ document.querySelector('#app').innerHTML = `
   ${Footer()}
 `;
 
-// Helpers: evita erro se elemento não existir (fase de construção)
+
+// Helpers
 const has = (selector) => document.querySelector(selector);
 const hasAll = (selector) => document.querySelectorAll(selector).length > 0;
 
-// A) Hero Section (Entrada do texto)
+// A) Hero Section
 if (has('.hero-content')) {
   gsap.from('.hero-content', {
     opacity: 0,
@@ -41,7 +40,7 @@ if (has('.hero-content')) {
   });
 }
 
-// B) Logos dos Clientes — sem empurrar e sem travar
+// B) Logos dos Clientes
 if (has('#clients') && hasAll('.client-logo')) {
   gsap.fromTo(
     '.client-logo',
@@ -96,7 +95,7 @@ if (hasAll('.project-card')) {
   });
 }
 
-// E) Botão WhatsApp (Pulsar + entrada)
+// E) Botão WhatsApp
 if (has('#whatsapp-button')) {
   gsap.to('#whatsapp-button', {
     scale: 1.05,
