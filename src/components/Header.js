@@ -1,7 +1,5 @@
 export function Header() {
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '5571999999999';
-  
-  // Cores
   const bgClass = 'bg-slate-50'; 
   const fillHex = '#f8fafc'; // (Slate-50 Hex)
 
@@ -32,6 +30,7 @@ export function Header() {
           <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
             <a href="#home" class="hover:text-emerald-600 transition">Home</a>
             <a href="#services" class="hover:text-emerald-600 transition">Serviços</a>
+            <a href="#portifolio" class="hover:text-emerald-600 transition">Portifólio</a>
             <a href="#about" class="hover:text-emerald-600 transition">Sobre</a>
           </nav>
 
