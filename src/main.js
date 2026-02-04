@@ -3,7 +3,7 @@ import { Header } from './components/Header.js';
 import { Hero } from './components/Hero.js';
 import { Clients } from './components/Clients.js';
 import { Services } from './components/Services.js';
-import { Projects } from './components/Projects.js';
+import { Projects, projectsData } from './components/Projects.js'; // Importamos projectsData
 import { Footer } from './components/Footer.js';
 import { WhatsAppButton } from './components/WhatsAppButton.js';
 import { gsap } from 'gsap';
@@ -57,13 +57,13 @@ function initMobileMenu() {
   menuTl
     .to(mobileMenu, { 
         duration: 0.45, 
-        autoAlpha: 1, // Controla opacity + visibility automaticamente
+        autoAlpha: 1, 
         ease: "power3.inOut" 
     })
     .to(menuLinks, {
         y: 0,
         duration: 0.6,
-        stagger: 0.08, // Efeito cascata entre os itens
+        stagger: 0.08, 
         ease: "power4.out"
     }, "-=0.2")
     .to(menuCta, {
@@ -80,19 +80,17 @@ function initMobileMenu() {
     if (isMenuOpen) {
       // --- ABRIR ---
       menuTl.play();
-      document.body.style.overflow = 'hidden'; // Trava o scroll da página
+      document.body.style.overflow = 'hidden'; 
       
       // Animação: Transforma Hambúrguer em X
-      // Linha Superior: Desce e gira 45º
       gsap.to(hamburgerLines[0], { 
-        y: 6, // Ajuste vertical para o centro (depende do gap do CSS)
+        y: 6, 
         rotate: 45, 
         duration: 0.3, 
         ease: "back.out(1.7)" 
       });
-      // Linha Inferior: Sobe e gira -45º
       gsap.to(hamburgerLines[1], { 
-        y: -6, // Ajuste vertical para o centro
+        y: -6, 
         rotate: -45, 
         duration: 0.3, 
         ease: "back.out(1.7)" 
@@ -101,7 +99,7 @@ function initMobileMenu() {
     } else {
       // --- FECHAR ---
       menuTl.reverse();
-      document.body.style.overflow = ''; // Destrava o scroll
+      document.body.style.overflow = ''; 
       
       // Animação: Retorna para Hambúrguer Paralelo
       gsap.to(hamburgerLines, { 
@@ -113,14 +111,12 @@ function initMobileMenu() {
     }
   };
 
-  // Evento: Clique no Botão Toggle
   menuToggle.addEventListener('click', toggleMenu);
 
-  // Evento: Clique nos Links (Navegação)
   clickableLinks.forEach(link => {
     link.addEventListener('click', () => {
       if (isMenuOpen) {
-        toggleMenu(); // Fecha o menu suavemente permitindo o scroll até a seção
+        toggleMenu(); 
       }
     });
   });
@@ -129,22 +125,19 @@ function initMobileMenu() {
 /**
  * Lógica "Temlis" (Header Docking):
  * - Funciona apenas no Desktop.
- * - Reduz o espaçador conforme o scroll, criando efeito de acoplamento.
  */
 function initHeroFusion() {
   const spacer = document.querySelector('#header-spacer');
   
-  // Verifica se o spacer existe e está visível (evita erros no mobile)
   if (spacer && spacer.offsetParent !== null) {
-    
-    gsap.set(spacer, { transition: 'none' }); // Remove transição CSS para controle total do GSAP
+    gsap.set(spacer, { transition: 'none' }); 
 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: 'body',      
         start: 'top top',     
-        end: '+=500', // Distância do scroll para completar o efeito
-        scrub: 0,     // Sincronia perfeita com o dedo/mouse
+        end: '+=500', 
+        scrub: 0,     
         invalidateOnRefresh: true
       }
     });
@@ -157,12 +150,9 @@ function initHeroFusion() {
 }
 
 /**
- * Animação de Entrada do Hero:
- * - Foca nos novos elementos (Badge, Título, CTA)
- * - Cria hierarquia visual de carregamento.
+ * Animação de Entrada do Hero
  */
 function initHeroAnimation() {
-  // Verifica se estamos usando o novo layout do Hero
   if (document.querySelector('.hero-title')) {
     const tl = gsap.timeline({ delay: 0.2 });
 
@@ -191,7 +181,6 @@ function initHeroAnimation() {
         ease: "back.out(1.7)"
     }, "-=0.5");
   } 
-  // Fallback para versões antigas (segurança)
   else if (document.querySelector('.hero-content')) {
     gsap.from('.hero-content', {
       opacity: 0, y: 100, duration: 1.2, ease: 'power3.out', delay: 0.2,
@@ -200,13 +189,140 @@ function initHeroAnimation() {
 }
 
 /**
- * Inicializa animações genéricas das outras seções (Clients, Services, etc)
+ * LÓGICA DO CARROSSEL DE PROJETOS (BENTO GRID)
+ * - Troca automática a cada 5s
+ * - Atualiza Texto, Imagem e Link do Botão
+ */
+function initProjectsCarousel() {
+  // Elementos do DOM
+  const mainImage = document.querySelector('#project-main-image');
+  
+  // Elementos de Texto
+  const titleEl = document.querySelector('#project-title');
+  const descEl = document.querySelector('#project-desc');
+  const catEl = document.querySelector('#project-category');
+  const locEl = document.querySelector('#project-location');
+  
+  // Botão do Projeto (Link Dinâmico)
+  const projectLinkBtn = document.querySelector('#project-link-btn'); 
+  
+  // Controles
+  const thumbs = document.querySelectorAll('.project-thumb');
+  const btnNext = document.querySelector('#next-project');
+  const btnPrev = document.querySelector('#prev-project');
+
+  // Proteção: se não houver a seção, não roda
+  if (!mainImage) return;
+
+  let currentIndex = 0;
+  let intervalId;
+  const AUTO_PLAY_TIME = 5000; // 5 Segundos
+
+  // Função para atualizar o slide
+  const updateProject = (index) => {
+    const project = projectsData[index];
+
+    // 1. Saída (Fade Out)
+    const tl = gsap.timeline();
+    
+    tl.to([titleEl, descEl, catEl, locEl], { 
+      y: 20, 
+      opacity: 0, 
+      duration: 0.3, 
+      stagger: 0.05 
+    })
+    .add(() => {
+      // 2. Troca de Dados no DOM (ocorre enquanto está invisível)
+      mainImage.src = project.img;
+      titleEl.innerText = project.title;
+      descEl.innerText = project.desc;
+      catEl.innerText = project.category;
+      locEl.innerText = project.location;
+      
+      // Atualiza o Link do Botão Dinamicamente
+      if(projectLinkBtn) {
+         projectLinkBtn.href = project.link; 
+      }
+
+      // Atualiza Thumbnails (Estilo Ativo/Inativo)
+      thumbs.forEach((t, i) => {
+        if(i === index) {
+            t.classList.remove('opacity-60');
+            t.classList.add('ring-2', 'ring-emerald-500');
+            t.querySelector('img').classList.remove('grayscale');
+        } else {
+            t.classList.add('opacity-60');
+            t.classList.remove('ring-2', 'ring-emerald-500');
+            t.querySelector('img').classList.add('grayscale');
+        }
+      });
+    })
+    .to(mainImage, { // Efeito de Zoom na Imagem de Fundo
+        scale: 1.1,
+        duration: 5,
+        ease: "power1.out"
+    }, "<") // Inicia junto com a troca de dados
+    .to([titleEl, descEl, catEl, locEl], { // Entrada (Fade In)
+      y: 0, 
+      opacity: 1, 
+      duration: 0.5, 
+      stagger: 0.1,
+      ease: "power2.out"
+    });
+
+    // Reset do Zoom para o próximo ciclo
+    gsap.set(mainImage, { scale: 1.0 });
+  };
+
+  // Funções de Navegação
+  const nextSlide = () => {
+    currentIndex = (currentIndex + 1) % projectsData.length;
+    updateProject(currentIndex);
+    resetTimer();
+  };
+
+  const prevSlide = () => {
+    currentIndex = (currentIndex - 1 + projectsData.length) % projectsData.length;
+    updateProject(currentIndex);
+    resetTimer();
+  };
+
+  // Timer Automático
+  const startTimer = () => {
+    intervalId = setInterval(nextSlide, AUTO_PLAY_TIME);
+  };
+
+  const resetTimer = () => {
+    clearInterval(intervalId);
+    startTimer();
+  };
+
+  // Event Listeners (Controles)
+  if(btnNext) btnNext.addEventListener('click', nextSlide);
+  if(btnPrev) btnPrev.addEventListener('click', prevSlide);
+
+  // Event Listeners (Thumbnails)
+  thumbs.forEach((thumb, index) => {
+    thumb.addEventListener('click', () => {
+      if (currentIndex !== index) {
+        currentIndex = index;
+        updateProject(currentIndex);
+        resetTimer();
+      }
+    });
+  });
+
+  // Inicia o Loop
+  startTimer();
+}
+
+/**
+ * Inicializa animações genéricas das outras seções
  */
 function initScrollAnimations() {
   const has = (selector) => document.querySelector(selector);
   const hasAll = (selector) => document.querySelectorAll(selector).length > 0;
 
-  // Clients (Efeito Stagger nos Logos)
   if (has('#clients') && hasAll('.client-logo')) {
     gsap.fromTo('.client-logo',
       { opacity: 0, scale: 0.9 },
@@ -216,7 +332,6 @@ function initScrollAnimations() {
     );
   }
 
-  // Services (Cards subindo)
   if (hasAll('.service-card')) {
     gsap.utils.toArray('.service-card').forEach((card, index) => {
       gsap.from(card, {
@@ -226,8 +341,7 @@ function initScrollAnimations() {
     });
   }
 
-  // Projects (Scale effect)
-  if (hasAll('.project-card')) {
+  if (hasAll('.project-card')) { // Mantido caso ainda existam cards antigos
     gsap.utils.toArray('.project-card').forEach((card, index) => {
       gsap.from(card, {
         scrollTrigger: { trigger: card, start: 'top 85%' },
@@ -236,12 +350,10 @@ function initScrollAnimations() {
     });
   }
 
-  // WhatsApp Button (Pulsar e Entrada)
   if (has('#whatsapp-button')) {
     gsap.from('#whatsapp-button', { 
       opacity: 0, y: 50, duration: 1, delay: 2, ease: 'elastic.out(1, 0.7)' 
     });
-    // Animação contínua (Pulse suave)
     gsap.to('#whatsapp-button', { 
       scale: 1.05, duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3 
     });
@@ -251,10 +363,10 @@ function initScrollAnimations() {
 // ----------------------------------------------------------------
 // 3. EXECUÇÃO
 // ----------------------------------------------------------------
-// Usamos DOMContentLoaded para garantir que o HTML injetado esteja pronto
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initHeroFusion();
     initHeroAnimation();
     initScrollAnimations();
+    initProjectsCarousel(); // Inicializa o Carrossel Bento Grid
 });
