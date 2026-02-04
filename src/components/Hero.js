@@ -1,4 +1,5 @@
 import heroPoster from '/img/foto-home.webp';
+import { Button } from './Button.js'; // Importamos o novo componente
 
 export function Hero() {
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '5571999999999';
@@ -16,7 +17,6 @@ export function Hero() {
             <source src="/img/video-hero.mp4" type="video/mp4">
             <source src="/img/video-hero.webm" type="video/webm">
           </video>
-          
           <div class="absolute inset-0 bg-slate-900/40"></div>
           <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-slate-900/20"></div>
         </div>
@@ -34,12 +34,16 @@ export function Hero() {
               <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-200">Engenharia Ambiental</span>
             </h1>
 
-            <div class="flex flex-col sm:flex-row gap-4 mt-8 hero-cta opacity-0 translate-y-4">
-               <a href="https://wa.me/${whatsappNumber}" target="_blank" class="bg-emerald-500 text-white px-8 py-4 rounded-full font-bold hover:scale-105 transition-transform shadow-lg shadow-emerald-900/20">
-                 Entre em contato
-               </a>
-            </div>
+          <div class="flex flex-col sm:flex-row gap-4 mt-8 hero-cta opacity-0 translate-y-4">
 
+                ${Button({ 
+                text: "Entre em contato", 
+                href: `https://wa.me/${whatsappNumber}`,
+                variant: "glass"  // <--- MUDANÇA AQUI
+                })}
+
+          </div>
+          
         </div>
       </div>
     </section>
