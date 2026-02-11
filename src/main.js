@@ -3,18 +3,15 @@ import { Header } from './components/Header.js';
 import { Hero } from './components/Hero.js';
 import { Clients } from './components/Clients.js';
 import { Services } from './components/Services.js';
-import { Projects, projectsData } from './components/Projects.js'; // Importamos projectsData
+import { Projects, projectsData } from './components/Projects.js';
 import { Footer } from './components/Footer.js';
 import { WhatsAppButton } from './components/WhatsAppButton.js';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Registrar o plugin ScrollTrigger
+
 gsap.registerPlugin(ScrollTrigger);
 
-// ----------------------------------------------------------------
-// 1. RENDERIZAÇÃO DA APLICAÇÃO (Injeção de Componentes)
-// ----------------------------------------------------------------
 document.querySelector('#app').innerHTML = `
   ${Header()}
   ${Hero()}
@@ -24,128 +21,63 @@ document.querySelector('#app').innerHTML = `
   ${WhatsAppButton()}
   ${Footer()}
 `;
-
-// ----------------------------------------------------------------
-// 2. FUNÇÕES DE INICIALIZAÇÃO (Lógica & Motion Design)
-// ----------------------------------------------------------------
-
 /**
  * Inicializa o Menu Mobile:
  * - Animação de entrada suave (Timeline)
- * - Transformação do ícone Hambúrguer para X (Morphing)
- * - Fechamento automático ao clicar em links
+ * - Morphing do ícone
  */
 function initMobileMenu() {
   const menuToggle = document.querySelector('#menu-toggle');
   const mobileMenu = document.querySelector('#mobile-menu');
   const hamburgerLines = document.querySelectorAll('.hamburger-line');
   
-  // Seletores internos para animação em cascata
   const menuLinks = document.querySelectorAll('.menu-link span'); 
   const menuCta = document.querySelector('.menu-cta-wrapper');
-  
-  // Links clicáveis (para fechar o menu ao navegar)
   const clickableLinks = document.querySelectorAll('#mobile-menu a');
 
   if (!menuToggle || !mobileMenu) return;
 
   let isMenuOpen = false;
-
-  // Timeline de Abertura (Pausada inicialmente)
   const menuTl = gsap.timeline({ paused: true });
 
   menuTl
-    .to(mobileMenu, { 
-        duration: 0.45, 
-        autoAlpha: 1, 
-        ease: "power3.inOut" 
-    })
-    .to(menuLinks, {
-        y: 0,
-        duration: 0.6,
-        stagger: 0.08, 
-        ease: "power4.out"
-    }, "-=0.2")
-    .to(menuCta, {
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        ease: "back.out(1.2)"
-    }, "-=0.4");
+    .to(mobileMenu, { duration: 0.45, autoAlpha: 1, ease: "power3.inOut" })
+    .to(menuLinks, { y: 0, duration: 0.6, stagger: 0.08, ease: "power4.out" }, "-=0.2")
+    .to(menuCta, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.2)" }, "-=0.4");
 
-  // Função Única de Controle (Toggle)
   const toggleMenu = () => {
     isMenuOpen = !isMenuOpen;
-
     if (isMenuOpen) {
-      // --- ABRIR ---
       menuTl.play();
       document.body.style.overflow = 'hidden'; 
-      
-      // Animação: Transforma Hambúrguer em X
-      gsap.to(hamburgerLines[0], { 
-        y: 6, 
-        rotate: 45, 
-        duration: 0.3, 
-        ease: "back.out(1.7)" 
-      });
-      gsap.to(hamburgerLines[1], { 
-        y: -6, 
-        rotate: -45, 
-        duration: 0.3, 
-        ease: "back.out(1.7)" 
-      });
-
+      gsap.to(hamburgerLines[0], { y: 6, rotate: 45, duration: 0.3, ease: "back.out(1.7)" });
+      gsap.to(hamburgerLines[1], { y: -6, rotate: -45, duration: 0.3, ease: "back.out(1.7)" });
     } else {
-      // --- FECHAR ---
       menuTl.reverse();
       document.body.style.overflow = ''; 
-      
-      // Animação: Retorna para Hambúrguer Paralelo
-      gsap.to(hamburgerLines, { 
-        y: 0, 
-        rotate: 0, 
-        duration: 0.3, 
-        ease: "power2.out" 
-      });
+      gsap.to(hamburgerLines, { y: 0, rotate: 0, duration: 0.3, ease: "power2.out" });
     }
   };
 
   menuToggle.addEventListener('click', toggleMenu);
-
   clickableLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      if (isMenuOpen) {
-        toggleMenu(); 
-      }
-    });
+    link.addEventListener('click', () => { if (isMenuOpen) toggleMenu(); });
   });
 }
 
 /**
- * Lógica "Temlis" (Header Docking):
- * - Funciona apenas no Desktop.
+ * Lógica "Temlis" (Header Docking Desktop)
  */
 function initHeroFusion() {
   const spacer = document.querySelector('#header-spacer');
-  
   if (spacer && spacer.offsetParent !== null) {
     gsap.set(spacer, { transition: 'none' }); 
-
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: 'body',      
-        start: 'top top',     
-        end: '+=500', 
-        scrub: 0,     
-        invalidateOnRefresh: true
+        trigger: 'body', start: 'top top', end: '+=500', scrub: 0, invalidateOnRefresh: true
       }
     });
-
-    tl.to(spacer, { 
-      height: 0, 
-      ease: 'none' 
-    });
+    tl.to(spacer, { height: 0, ease: 'none' });
   }
 }
 
@@ -155,164 +87,151 @@ function initHeroFusion() {
 function initHeroAnimation() {
   if (document.querySelector('.hero-title')) {
     const tl = gsap.timeline({ delay: 0.2 });
-
-    tl.from("#hero-capsule", {
-        scale: 0.96,
-        opacity: 0,
-        duration: 1.2,
-        ease: "power3.out"
-    })
-    .from(".hero-badge", {
-        y: 20,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out"
-    }, "-=0.9")
-    .from(".hero-title", {
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out"
-    }, "-=0.7")
-    .to(".hero-cta", {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: "back.out(1.7)"
-    }, "-=0.5");
+    tl.from("#hero-capsule", { scale: 0.96, opacity: 0, duration: 1.2, ease: "power3.out" })
+      .from(".hero-badge", { y: 20, opacity: 0, duration: 0.8, ease: "power2.out" }, "-=0.9")
+      .from(".hero-title", { y: 40, opacity: 0, duration: 1, ease: "power3.out" }, "-=0.7")
+      .to(".hero-cta", { y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" }, "-=0.5");
   } 
   else if (document.querySelector('.hero-content')) {
-    gsap.from('.hero-content', {
-      opacity: 0, y: 100, duration: 1.2, ease: 'power3.out', delay: 0.2,
-    });
+    gsap.from('.hero-content', { opacity: 0, y: 100, duration: 1.2, ease: 'power3.out', delay: 0.2 });
   }
 }
 
 /**
- * LÓGICA DO CARROSSEL DE PROJETOS (BENTO GRID)
- * - Troca automática a cada 5s
- * - Atualiza Texto, Imagem e Link do Botão
+ * LÓGICA DO CARROSSEL DE PROJETOS (BENTO GRID) - ATUALIZADA
+ * - Suporte a Preload de Imagem
+ * - Fade In/Out Suave
+ * - Atualização Dinâmica de Links
+ * - Pausa Inteligente no Hover
  */
 function initProjectsCarousel() {
-  // Elementos do DOM
-  const mainImage = document.querySelector('#project-main-image');
-  
-  // Elementos de Texto
-  const titleEl = document.querySelector('#project-title');
-  const descEl = document.querySelector('#project-desc');
-  const catEl = document.querySelector('#project-category');
-  const locEl = document.querySelector('#project-location');
-  
-  // Botão do Projeto (Link Dinâmico)
-  const projectLinkBtn = document.querySelector('#project-link-btn'); 
-  
-  // Controles
-  const thumbs = document.querySelectorAll('.project-thumb');
-  const btnNext = document.querySelector('#next-project');
-  const btnPrev = document.querySelector('#prev-project');
-
-  // Proteção: se não houver a seção, não roda
-  if (!mainImage) return;
-
-  let currentIndex = 0;
-  let intervalId;
-  const AUTO_PLAY_TIME = 5000; // 5 Segundos
-
-  // Função para atualizar o slide
-  const updateProject = (index) => {
-    const project = projectsData[index];
-
-    // 1. Saída (Fade Out)
-    const tl = gsap.timeline();
-    
-    tl.to([titleEl, descEl, catEl, locEl], { 
-      y: 20, 
-      opacity: 0, 
-      duration: 0.3, 
-      stagger: 0.05 
-    })
-    .add(() => {
-      // 2. Troca de Dados no DOM (ocorre enquanto está invisível)
-      mainImage.src = project.img;
-      titleEl.innerText = project.title;
-      descEl.innerText = project.desc;
-      catEl.innerText = project.category;
-      locEl.innerText = project.location;
-      
-      // Atualiza o Link do Botão Dinamicamente
-      if(projectLinkBtn) {
-         projectLinkBtn.href = project.link; 
-      }
-
-      // Atualiza Thumbnails (Estilo Ativo/Inativo)
-      thumbs.forEach((t, i) => {
-        if(i === index) {
-            t.classList.remove('opacity-60');
-            t.classList.add('ring-2', 'ring-emerald-500');
-            t.querySelector('img').classList.remove('grayscale');
-        } else {
-            t.classList.add('opacity-60');
-            t.classList.remove('ring-2', 'ring-emerald-500');
-            t.querySelector('img').classList.add('grayscale');
-        }
-      });
-    })
-    .to(mainImage, { // Efeito de Zoom na Imagem de Fundo
-        scale: 1.1,
-        duration: 5,
-        ease: "power1.out"
-    }, "<") // Inicia junto com a troca de dados
-    .to([titleEl, descEl, catEl, locEl], { // Entrada (Fade In)
-      y: 0, 
-      opacity: 1, 
-      duration: 0.5, 
-      stagger: 0.1,
-      ease: "power2.out"
-    });
-
-    // Reset do Zoom para o próximo ciclo
-    gsap.set(mainImage, { scale: 1.0 });
+  // 1. Mapeamento dos Elementos
+  const elements = {
+    section: document.querySelector('#projects-section'),
+    img: document.querySelector('#project-main-image'),
+    title: document.querySelector('#project-title'),
+    desc: document.querySelector('#project-desc'),
+    cat: document.querySelector('#project-category'),
+    loc: document.querySelector('#project-location'),
+    btn: document.querySelector('#project-link-btn'),
+    infoContainer: document.querySelector('#project-info-container'),
+    thumbs: document.querySelectorAll('.project-thumb'),
+    // Selecionamos TODOS os botões de próximo (Desktop + Mobile)
+    nextBtns: document.querySelectorAll('#next-project, #next-project-mobile'),
+    // Selecionamos TODOS os botões de anterior (Desktop + Mobile)
+    prevBtns: document.querySelectorAll('#prev-project, #prev-project-mobile'),
   };
 
-  // Funções de Navegação
-  const nextSlide = () => {
+  // Proteção: se não houver a imagem principal, aborta
+  if (!elements.img) return;
+
+  let currentIndex = 0;
+  let autoPlayTimer;
+  const AUTO_DELAY = 5; // 5 segundos
+
+  // --- Função Principal de Atualização Visual ---
+  function updateProject(index) {
+    const project = projectsData[index];
+    
+    // A. Atualiza estado visual das Thumbnails
+    // Lógica: Inativo = opacity-50 | Ativo = opacity-100 + Ring Verde
+    elements.thumbs.forEach((thumb, i) => {
+      if (i === index) {
+        thumb.classList.remove('opacity-50', 'border-transparent');
+        thumb.classList.add('ring-2', 'ring-emerald-500', 'ring-offset-2', 'opacity-100');
+      } else {
+        thumb.classList.add('opacity-50', 'border-transparent');
+        thumb.classList.remove('ring-2', 'ring-emerald-500', 'ring-offset-2', 'opacity-100');
+      }
+    });
+
+    // B. Timeline de Transição (Fade Out -> Troca -> Fade In)
+    const tl = gsap.timeline({
+      onComplete: () => {
+        // 1. Troca os dados (enquanto invisível)
+        elements.title.innerText = project.title;
+        elements.desc.innerText = project.desc;
+        elements.cat.innerText = project.category;
+        elements.loc.innerText = project.location;
+        
+        if (elements.btn) elements.btn.setAttribute('href', project.link);
+        elements.img.setAttribute('src', project.img);
+        
+        // 2. Animação de Entrada (Fade In)
+        gsap.to(elements.img, { opacity: 1, scale: 1, duration: 0.5 });
+        
+        // Garante que o texto apareça
+        gsap.to(elements.infoContainer, { opacity: 1, duration: 0.1 }); 
+
+        // Animação em cascata dos textos
+        gsap.fromTo([elements.cat, elements.loc, elements.title, elements.desc], 
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: "power2.out" }
+        );
+      }
+    });
+
+    // Animação de Saída (Fade Out)
+    tl.to([elements.infoContainer, elements.img], { 
+      opacity: 0, 
+      duration: 0.3, 
+      ease: "power2.in" 
+    });
+  }
+
+  // --- Funções de Navegação ---
+  function next() {
     currentIndex = (currentIndex + 1) % projectsData.length;
     updateProject(currentIndex);
     resetTimer();
-  };
+  }
 
-  const prevSlide = () => {
+  function prev() {
     currentIndex = (currentIndex - 1 + projectsData.length) % projectsData.length;
     updateProject(currentIndex);
     resetTimer();
-  };
+  }
 
-  // Timer Automático
-  const startTimer = () => {
-    intervalId = setInterval(nextSlide, AUTO_PLAY_TIME);
-  };
+  function goTo(index) {
+    if (index === currentIndex) return;
+    currentIndex = index;
+    updateProject(currentIndex);
+    resetTimer();
+  }
 
-  const resetTimer = () => {
-    clearInterval(intervalId);
+  // --- Timer / Autoplay ---
+  function startTimer() {
+    if (autoPlayTimer) autoPlayTimer.kill();
+    autoPlayTimer = gsap.delayedCall(AUTO_DELAY, next);
+  }
+
+  function resetTimer() {
     startTimer();
-  };
+  }
 
-  // Event Listeners (Controles)
-  if(btnNext) btnNext.addEventListener('click', nextSlide);
-  if(btnPrev) btnPrev.addEventListener('click', prevSlide);
+  // --- Event Listeners (Controles) ---
+  
+  // Adiciona o clique para TODOS os botões "Próximo" (Desktop e Mobile)
+  elements.nextBtns.forEach(btn => btn.addEventListener('click', next));
 
-  // Event Listeners (Thumbnails)
-  thumbs.forEach((thumb, index) => {
+  // Adiciona o clique para TODOS os botões "Anterior" (Desktop e Mobile)
+  elements.prevBtns.forEach(btn => btn.addEventListener('click', prev));
+
+  // Clique nas Thumbnails
+  elements.thumbs.forEach(thumb => {
     thumb.addEventListener('click', () => {
-      if (currentIndex !== index) {
-        currentIndex = index;
-        updateProject(currentIndex);
-        resetTimer();
-      }
+      const index = parseInt(thumb.getAttribute('data-index'));
+      goTo(index);
     });
   });
 
-  // Inicia o Loop
+  // UX: Pausar autoplay quando o mouse estiver em cima da seção (leitura)
+  if (elements.section) {
+    elements.section.addEventListener('mouseenter', () => { if(autoPlayTimer) autoPlayTimer.pause(); });
+    elements.section.addEventListener('mouseleave', () => { if(autoPlayTimer) autoPlayTimer.resume(); });
+  }
+
+  // Inicia o ciclo
   startTimer();
 }
 
@@ -341,15 +260,6 @@ function initScrollAnimations() {
     });
   }
 
-  if (hasAll('.project-card')) { // Mantido caso ainda existam cards antigos
-    gsap.utils.toArray('.project-card').forEach((card, index) => {
-      gsap.from(card, {
-        scrollTrigger: { trigger: card, start: 'top 85%' },
-        opacity: 0, scale: 0.95, duration: 0.6, delay: index * 0.1, ease: 'power1.out'
-      });
-    });
-  }
-
   if (has('#whatsapp-button')) {
     gsap.from('#whatsapp-button', { 
       opacity: 0, y: 50, duration: 1, delay: 2, ease: 'elastic.out(1, 0.7)' 
@@ -360,13 +270,11 @@ function initScrollAnimations() {
   }
 }
 
-// ----------------------------------------------------------------
 // 3. EXECUÇÃO
-// ----------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initHeroFusion();
     initHeroAnimation();
     initScrollAnimations();
-    initProjectsCarousel(); // Inicializa o Carrossel Bento Grid
+    initProjectsCarousel(); // Inicia o Bento Grid Power
 });
