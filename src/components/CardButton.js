@@ -1,32 +1,35 @@
 export function CardButton({ text, href = "#" }) {
   
-  // Configuração Fixa (Branco e Preto)
+  // Cores exatas extraídas do seu Figma
   const theme = {
-    wrapper: "bg-white shadow-xl shadow-black/5 border border-slate-100", // Corpo Branco
-    circle: "bg-slate-900", // Círculo Preto
-    icon: "text-white",     // Ícone Branco (dentro do preto)
-    textInit: "text-slate-900", // Texto Preto
-    textHover: "group-hover:text-white" // Texto vira Branco no hover
+    wrapper: "bg-zinc-300",         // Cinza claro
+    circle: "bg-slate-950",         // Preto profundo do círculo
+    icon: "text-white",             // Seta branca
+    text: "text-black",             // Texto preto
+    font: "font-['Inter']"          // Tipografia
   };
 
-  const ease = "transition-all duration-500 ease-[cubic-bezier(0.65,0,0.076,1)]";
+  const ease = "transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]";
   
   return `
     <a href="${href}" 
        target="_blank"
        id="project-link-btn" 
-       class="group relative inline-flex items-center flex-row-reverse h-[3.5rem] pl-8 pr-2 rounded-full ${theme.wrapper} overflow-hidden cursor-pointer no-underline w-fit select-none">
+       class="group relative inline-flex items-center justify-between w-full md:w-fit h-14 md:h-[5.5rem] pl-6 md:pl-10 pr-1.5 md:pr-2 rounded-full ${theme.wrapper} overflow-hidden cursor-pointer no-underline active:scale-95 transition-transform shadow-md hover:shadow-lg">
       
-      <span class="absolute top-0 right-0 h-full w-[3.5rem] rounded-full ${theme.circle} z-0 ${ease} group-hover:w-full"></span>
-      
-      <span class="relative z-10 flex items-center justify-center w-[3.5rem] h-full">
-        <svg class="w-5 h-5 ${theme.icon} ${ease} group-hover:-translate-y-0.5 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="square" stroke-linejoin="miter" d="M17 7l-10 10M8 7h9v9" />
-        </svg>
-      </span>
-      
-      <span class="relative z-10 font-bold text-sm uppercase tracking-widest mr-4 whitespace-nowrap ${theme.textInit} ${theme.textHover} ${ease}">
+      <span class="relative z-10 ${theme.font} font-bold text-xs md:text-xl uppercase tracking-wider ${theme.text} mr-4 md:mr-16 whitespace-nowrap">
         ${text}
+      </span>
+
+      <span class="relative z-10 flex items-center justify-center w-11 h-11 md:w-20 md:h-20 rounded-full ${theme.circle} ${ease} shadow-inner group-hover:scale-105">
+        
+        <svg class="w-4 h-4 md:w-7 md:h-7 ${theme.icon} transform transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" 
+             fill="none" 
+             viewBox="0 0 24 24" 
+             stroke="currentColor" 
+             stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H8M17 7v9" />
+        </svg>
       </span>
 
     </a>
