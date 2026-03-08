@@ -199,13 +199,6 @@ function initProjectsCarousel() {
 }
 
 function initScrollAnimations() {
-  if (document.querySelector('.client-logo')) {
-    gsap.from('.client-logo', {
-      opacity: 0, scale: 0.9, duration: 0.6, stagger: 0.05, ease: 'back.out(1.2)',
-      scrollTrigger: { trigger: '#clients', start: 'top 90%', once: true },
-    });
-  }
-
   if (document.querySelectorAll('.service-card').length > 0) {
     gsap.utils.toArray('.service-card').forEach((card, index) => {
       gsap.from(card, {

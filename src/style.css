@@ -11,14 +11,17 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: #f8fafc; /* slate-50 */
-  color: #0f172a; /* slate-900 */
+  background-color: #f8fafc;
+  /* slate-50 */
+  color: #0f172a;
+  /* slate-900 */
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-img, svg {
+img,
+svg {
   display: block;
   max-width: 100%;
   height: auto;
@@ -29,18 +32,21 @@ img, svg {
    ========================================== */
 
 @keyframes marquee {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 .animate-marquee {
   animation: marquee 35s linear infinite;
-  width: max-content;
   will-change: transform;
-  transform: translate3d(0, 0, 0);
 }
 
-.animate-marquee:hover {
+.marquee-wrapper:hover .animate-marquee {
   animation-play-state: paused;
 }
 
@@ -49,6 +55,7 @@ img, svg {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -56,12 +63,14 @@ img, svg {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { 
-    scroll-behavior: auto; 
+  html {
+    scroll-behavior: auto;
   }
-  .animate-marquee { 
-    animation: none !important; 
+
+  .animate-marquee {
+    animation: none !important;
   }
+
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
@@ -72,11 +81,11 @@ img, svg {
    3. SCROLLBAR CUSTOMIZADA
    ========================================== */
 
-::-webkit-scrollbar { 
-  width: 10px; 
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-::-webkit-scrollbar-track { 
+::-webkit-scrollbar-track {
   background: #f8fafc;
 }
 
@@ -103,7 +112,7 @@ img, svg {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 9999px;
-  box-shadow: 
+  box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.08),
     0 1px 3px rgba(0, 0, 0, 0.05);
   padding: 12px 32px;
@@ -112,7 +121,7 @@ img, svg {
 }
 
 .header-wrapper:hover {
-  box-shadow: 
+  box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.12),
     0 2px 6px rgba(0, 0, 0, 0.08);
 }
@@ -125,18 +134,21 @@ img, svg {
   top: -14px;
   width: 44px;
   height: 44px;
-  background: #f8fafc; /* COR EXATA DO BODY */
+  background: #f8fafc;
+  /* COR EXATA DO BODY */
   border-radius: 50%;
   z-index: 1;
   pointer-events: none;
 }
 
 .header-wrapper::before {
-  left: calc(50% - 42px); /* Círculo esquerdo */
+  left: calc(50% - 42px);
+  /* Círculo esquerdo */
 }
 
 .header-wrapper::after {
-  left: calc(50% + 2px); /* Círculo direito */
+  left: calc(50% + 2px);
+  /* Círculo direito */
 }
 
 /* Layout flex */
@@ -173,19 +185,21 @@ img, svg {
   height: 52px;
   background: white;
   border-radius: 50%;
-  border: 3px solid #10b981; /* emerald-500 */
+  border: 3px solid #10b981;
+  /* emerald-500 */
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 
+  box-shadow:
     0 4px 12px rgba(16, 185, 129, 0.25),
     0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
 }
 
 .header-logo:hover .logo-circle {
-  border-color: #059669; /* emerald-600 */
-  box-shadow: 
+  border-color: #059669;
+  /* emerald-600 */
+  box-shadow:
     0 6px 16px rgba(16, 185, 129, 0.35),
     0 3px 6px rgba(0, 0, 0, 0.15);
 }
@@ -212,7 +226,8 @@ img, svg {
 
 /* ========== NAVEGAÇÃO ESQUERDA ========== */
 .header-nav-left {
-  display: none; /* Mobile first */
+  display: none;
+  /* Mobile first */
   align-items: center;
   gap: 28px;
   flex: 1;
@@ -221,7 +236,8 @@ img, svg {
 .header-nav-left a {
   font-size: 13px;
   font-weight: 600;
-  color: #475569; /* slate-600 */
+  color: #475569;
+  /* slate-600 */
   text-decoration: none;
   transition: color 0.2s;
   white-space: nowrap;
@@ -239,7 +255,8 @@ img, svg {
 
 /* ========== ESPAÇADOR CENTRAL ========== */
 .header-spacer {
-  width: 160px; /* Espaço reservado para logo */
+  width: 160px;
+  /* Espaço reservado para logo */
   flex-shrink: 0;
 }
 
@@ -259,8 +276,10 @@ img, svg {
 }
 
 .header-cta {
-  display: none; /* Oculto em mobile pequeno */
-  background: #1e293b; /* slate-800 */
+  display: none;
+  /* Oculto em mobile pequeno */
+  background: #1e293b;
+  /* slate-800 */
   color: white;
   font-size: 11px;
   font-weight: 700;
@@ -314,45 +333,45 @@ img, svg {
   .header-wrapper {
     padding: 10px 20px;
   }
-  
+
   .header-wrapper::before,
   .header-wrapper::after {
     width: 38px;
     height: 38px;
     top: -12px;
   }
-  
+
   .header-wrapper::before {
     left: calc(50% - 36px);
   }
-  
+
   .header-wrapper::after {
     left: calc(50% + 2px);
   }
-  
+
   .logo-circle {
     width: 44px;
     height: 44px;
   }
-  
+
   .logo-circle svg {
     width: 24px;
     height: 24px;
   }
-  
+
   .logo-text {
     font-size: 8px;
     padding: 1px 8px;
   }
-  
+
   .header-logo {
     top: -24px;
   }
-  
+
   .header-content {
     gap: 16px;
   }
-  
+
   .header-nav-left {
     gap: 20px;
   }
