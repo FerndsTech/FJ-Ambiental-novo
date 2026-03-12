@@ -8,6 +8,7 @@ import { Footer } from './components/Footer.js';
 import { WhatsAppButton } from './components/WhatsAppButton.js';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { About } from './components/About.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +21,7 @@ document.querySelector('#app').innerHTML = `
   ${Clients()}
   ${Services()}
   ${Projects()}
-  ${WhatsAppButton()}
+  ${About()} ${WhatsAppButton()} 
   ${Footer()}
 `;
 
@@ -206,7 +207,81 @@ function initScrollAnimations() {
         opacity: 0, y: 50, duration: 0.8, delay: index * 0.1, ease: 'power2.out'
       });
     });
+    // No main.js, dentro de initScrollAnimations()
+    gsap.from('.reveal-left', {
+      scrollTrigger: { trigger: '#about', start: 'top 80%' },
+      x: -50,
+      opacity: 0,
+      duration: 1,
+      ease: 'power3.out'
+    });
+
+    gsap.from('.reveal-right div', {
+      scrollTrigger: { trigger: '#about', start: 'top 75%' },
+      scale: 0.9,
+      opacity: 0,
+      duration: 1.2,
+      stagger: 0.2, // Faz as fotos entrarem uma por uma
+      ease: 'back.out(1.7)'
+    });
   }
+
+  // --- ANIMAÇÕES DA SECTION SOBRE ---
+   if (document.querySelector('#about')) {
+     
+     // 1. Texto (O gatilho agora é a própria div do texto)
+     gsap.fromTo('.reveal-left', 
+       { opacity: 0, x: -40 },
+       { 
+         scrollTrigger: { 
+           trigger: '.reveal-left', // Correção crucial aqui
+           start: 'top 85%', 
+           once: true 
+         },
+         opacity: 1, 
+         x: 0, 
+         duration: 1, 
+         ease: 'power2.out' 
+       }
+     );
+
+     // 2. Fotos e Cartão (O gatilho agora é a coluna da direita)
+     gsap.fromTo('.about-card', 
+       { opacity: 0, y: 40 },
+       {
+         scrollTrigger: { 
+           trigger: '.reveal-right', // Correção aqui
+           start: 'top 80%', 
+           once: true 
+         },
+         opacity: 1, 
+         y: 0, 
+         duration: 1, 
+         stagger: 0.2, 
+         ease: 'power2.out'
+       }
+     );
+
+     // 3. Contadores Numericos
+     gsap.utils.toArray('.animate-number').forEach(el => {
+       const target = parseInt(el.getAttribute('data-target'));
+       gsap.fromTo(el, 
+         { innerHTML: 0 },
+         {
+           scrollTrigger: { 
+             trigger: '.reveal-left', // Correção aqui
+             start: 'top 85%', 
+             once: true 
+           },
+           innerHTML: target,
+           duration: 2.5,
+           snap: { innerHTML: 1 }, 
+           ease: 'power2.out'
+         }
+       );
+     });
+   }
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {
