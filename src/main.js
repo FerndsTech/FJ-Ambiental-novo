@@ -9,19 +9,40 @@ import { WhatsAppButton } from './components/WhatsAppButton.js';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { About } from './components/About.js';
+import SplitType from 'split-type';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ----------------------------------------------------------------
-// 1. RENDERIZAÇÃO DA APLICAÇÃO
-// ----------------------------------------------------------------
+
 document.querySelector('#app').innerHTML = `
+  <div id="preloader" class="fixed inset-0 z-[9999] bg-[#0A0F1A] flex flex-col items-center justify-center font-['Inter']">
+    
+    <div class="overflow-hidden mb-5">
+      <h1 class="preloader-text text-white text-3xl md:text-5xl font-extrabold tracking-tighter translate-y-[100%]">
+        FJ AMBIENTAL
+      </h1>
+    </div>
+
+    <div class="w-48 md:w-64 h-[2px] bg-slate-800 rounded-full overflow-hidden mb-4 relative">
+      <div class="preloader-bar absolute top-0 left-0 h-full w-full bg-emerald-500 scale-x-0 origin-left"></div>
+    </div>
+
+    <div class="overflow-hidden">
+      <span class="preloader-sub text-emerald-400/80 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase translate-y-[100%] block">
+        Consultoria Ambiental e Recursos Hídricos
+
+      </span>
+    </div>
+
+  </div>
+
   ${Header()}
   ${Hero()}
   ${Clients()}
   ${Services()}
   ${Projects()}
-  ${About()} ${WhatsAppButton()} 
+  ${About()} 
+  ${WhatsAppButton()} 
   ${Footer()}
 `;
 
@@ -67,6 +88,33 @@ function initMobileMenu() {
   });
 }
 
+
+function initTextAnimations() {
+  const textElements = document.querySelectorAll('.reveal-text');
+
+  textElements.forEach((el) => {
+    // 1. O SplitType fatia o texto (inclusive lidando com seu <span> interno)
+    const text = new SplitType(el, { types: 'lines, chars' });
+
+    // 2. FORÇA a div principal a ficar visível imediatamente (mata o bug do texto sumido)
+    gsap.set(el, { opacity: 1 });
+
+    // 3. Anima apenas os caracteres (letrinhas)
+    gsap.from(text.chars, {
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%",
+        once: true
+      },
+      duration: 0.8,
+      y: 80,
+      opacity: 0, // Adicionado para dar um efeito de fade junto com a subida
+      stagger: 0.02,
+      ease: "power4.out"
+    });
+  });
+}
+
 function initHeroFusion() {
   const spacer = document.querySelector('#header-spacer');
   if (spacer && spacer.offsetParent !== null) {
@@ -79,14 +127,53 @@ function initHeroFusion() {
   }
 }
 
+function initPreloader() {
+  // Remova a trava de overflow via JS se usar o 'scrollbar-gutter' no CSS
+  // document.body.style.overflow = 'hidden'; 
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      const preloader = document.querySelector('#preloader');
+      if (preloader) preloader.style.display = 'none';
+      
+      // Atualiza o GSAP após um pequeno respiro para garantir estabilidade
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+    }
+  });
+
+  tl.to(".preloader-bar", { scaleX: 1, duration: 1.2, ease: "expo.inOut" })
+    .to(".preloader-text, .preloader-sub", { y: "0%", duration: 0.8, ease: "expo.out", stagger: 0.1 }, "-=0.6")
+    .to(".preloader-text, .preloader-sub", { y: "-100%", duration: 0.6, ease: "power3.in", delay: 0.5 })
+    .to(".preloader-bar", { scaleX: 0, transformOrigin: "right", duration: 0.4, ease: "power3.in" }, "-=0.6")
+    
+    // Dispara a Hero um pouco antes da cortina terminar de subir
+    .add(() => {
+      initHeroAnimation();
+    }, "-=0.4") 
+    
+    .to("#preloader", { yPercent: -100, duration: 1.2, ease: "expo.inOut" }, "-=0.2");
+}
+
 function initHeroAnimation() {
-  if (document.querySelector('.hero-title')) {
-    const tl = gsap.timeline({ delay: 0.2 });
-    tl.from("#hero-capsule", { scale: 0.96, opacity: 0, duration: 1.2, ease: "power3.out" })
-      .from(".hero-badge", { y: 20, opacity: 0, duration: 0.8, ease: "power2.out" }, "-=0.9")
-      .from(".hero-title", { y: 40, opacity: 0, duration: 1, ease: "power3.out" }, "-=0.7")
-      .to(".hero-cta", { y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.7)" }, "-=0.5");
-  }
+  const capsule = document.querySelector('#hero-capsule');
+  const title = document.querySelector('.hero-title') || document.querySelector('h1');
+  const badge = document.querySelector('.hero-badge');
+  const button = document.querySelector('.hero-cta') || document.querySelector('a[href="#contact"]'); 
+
+  if (!capsule) return;
+
+  const tl = gsap.timeline();
+  
+  // O fromTo garante que a opacidade termine em 1 e a posição em 0
+  tl.fromTo(capsule, { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: "expo.out" });
+  
+  if (badge) tl.fromTo(badge, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, "-=0.8");
+  
+  if (title) tl.fromTo(title, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power4.out" }, "-=0.6");
+  
+  if (button) tl.fromTo(button, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.5)" }, "-=0.4");
 }
 
 function initProjectsCarousel() {
@@ -108,7 +195,7 @@ function initProjectsCarousel() {
   // 1. LÓGICA MOBILE: Sincronia do Scroll com os Dots
   const mobileSlider = document.querySelector('#mobile-projects-slider');
   const mobileDots = document.querySelectorAll('.mobile-dot');
-  const mobileThumbs = document.querySelectorAll('.mobile-thumb'); // Pegando as fotinhas
+  const mobileThumbs = document.querySelectorAll('.mobile-thumb'); 
 
   if (mobileSlider && mobileDots.length) {
     mobileSlider.addEventListener('scroll', () => {
@@ -287,7 +374,9 @@ function initScrollAnimations() {
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initHeroFusion();
-    initHeroAnimation();
+    initPreloader();
     initScrollAnimations();
     initProjectsCarousel(); 
 });
+
+window.addEventListener('DOMContentLoaded', initTextAnimations);

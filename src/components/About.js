@@ -18,8 +18,9 @@ export function About() {
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
               
               <div class="lg:col-span-5 flex flex-col items-start reveal-left space-y-10">
-                <h2 class="text-[44px] md:text-5xl lg:text-6xl font-extrabold font-['Inter'] text-slate-900 tracking-tighter leading-[0.98]">
-                  Nossa essência <br/>técnica, sua <br/><span class="text-emerald-500">evolução</span> sustentável.
+                <h2 class="reveal-text text-[44px] md:text-5xl lg:text-6xl font-extrabold font-['Inter'] text-slate-900 tracking-tighter leading-[0.98]">
+                  Nossa essência <br/>técnica, sua <br/>
+                  <span class="text-emerald-500">evolução</span> sustentável.
                 </h2>
                 <div class="space-y-6 text-slate-600 font-['Inter'] text-base md:text-lg leading-relaxed max-w-lg">
                   <p>A <strong>FJ Ambiental</strong> simplifica a engenharia ambiental complexa, unindo rigor técnico com uma abordagem próxima e transparente.</p>

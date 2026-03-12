@@ -7,6 +7,25 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 110px;
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A0F1A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
 }
 
 body {
@@ -25,6 +44,23 @@ svg {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+/* ==========================================
+   3. SplitText Gsap
+   ========================================== */
+
+/* Garante que o texto não "pisque" antes da animação */
+.reveal-text {
+  opacity: 0;
+}
+
+/* A mágica do SplitType: cada caractere fica dentro de um 'clipe' invisível */
+
+
+.line {
+  overflow: hidden;
+  /* Isso cria a 'parede' de onde o texto emerge */
 }
 
 /* ==========================================
