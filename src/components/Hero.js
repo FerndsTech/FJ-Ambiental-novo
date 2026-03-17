@@ -1,5 +1,5 @@
 import heroPoster from '/img/foto-home.webp';
-import { Button } from './Button.js'; // Importamos o novo componente
+import { Button } from './Button.js'; 
 
 export function Hero() {
   const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '5571999999999';
@@ -14,7 +14,7 @@ export function Hero() {
             class="w-full h-full object-cover scale-105"
             autoplay muted loop playsinline preload="metadata" poster="${heroPoster}"
           >
-            <source src="/img/video-hero.mp4" type="video/mp4">
+            <source src="/img/video-hero2.mp4" type="video/mp4">
             <source src="/img/video-hero.webm" type="video/webm">
           </video>
           <div class="absolute inset-0 bg-slate-900/40"></div>
