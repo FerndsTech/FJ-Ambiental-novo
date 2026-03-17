@@ -14,43 +14,33 @@ export function Clients() {
     { name: "SLC", src: "/img/logos/logo-slc.svg" }
   ];
 
-  const loopClients = [...originalClients, ...originalClients];
+  const renderTrack = () => `
+    <div class="flex items-center gap-20 animate-marquee w-max min-w-full shrink-0 pr-20">
+      ${originalClients.map(client => `
+        <div class="relative flex items-center justify-center w-48 h-24 shrink-0 transition-transform duration-300 hover:scale-110">
+          <img
+            src="${client.src}"
+            alt="${client.name}"
+            loading="lazy"
+            decoding="async"
+            class="client-logo max-h-20 md:max-h-[88px] w-auto max-w-[200px] object-contain block grayscale opacity-50 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
+          />
+        </div>
+      `).join('')}
+    </div>
+  `;
 
   return `
     <section id="clients" class="py-6 md:py-8 bg-transparent px-4 md:px-6">
-      <div class="relative w-full overflow-hidden">
-        <div class="relative w-full flex overflow-hidden">
+      
+      <div class="relative w-full overflow-hidden flex marquee-wrapper">
 
-          <div class="absolute top-0 left-0 h-full w-24 md:w-40 bg-linear-to-r from-white via-white/90 to-transparent z-10 pointer-events-none"></div>
-          <div class="absolute top-0 right-0 h-full w-24 md:w-40 bg-linear-to-l from-white via-white/90 to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute top-0 left-0 h-full w-24 md:w-40 bg-gradient-to-r from-[#f8fafc] via-[#f8fafc]/90 to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute top-0 right-0 h-full w-24 md:w-40 bg-gradient-to-l from-[#f8fafc] via-[#f8fafc]/90 to-transparent z-10 pointer-events-none"></div>
 
-          <div class="flex items-center gap-20 animate-marquee whitespace-nowrap pl-4">
-            ${loopClients.map(client => `
-              <div class="group relative flex items-center justify-center w-56 h-24 shrink-0 py-1 leading-none transition-transform duration-300 hover:scale-110">
-                <img
-                  src="${client.src}"
-                  alt="${client.name}"
-                  loading="lazy"
-                  decoding="async"
-                  class="
-                    client-logo
-                    max-h-20 md:max-h-[88px]
-                    w-auto
-                    max-w-[200px]
-                    object-contain
-                    block
-                    grayscale
-                    opacity-50
-                    transition-all duration-300
-                    group-hover:grayscale-0
-                    group-hover:opacity-85
-                  "
-                />
-              </div>
-            `).join('')}
-          </div>
-
-        </div>
+        ${renderTrack()}
+        ${renderTrack()}
+        
       </div>
     </section>
   `;

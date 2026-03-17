@@ -3,258 +3,380 @@ import { Header } from './components/Header.js';
 import { Hero } from './components/Hero.js';
 import { Clients } from './components/Clients.js';
 import { Services } from './components/Services.js';
-import { Projects } from './components/Projects.js';
+import { Projects, projectsData } from './components/Projects.js';
 import { Footer } from './components/Footer.js';
 import { WhatsAppButton } from './components/WhatsAppButton.js';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { About } from './components/About.js';
+import SplitType from 'split-type';
 
-// Registrar o plugin ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 
-// ----------------------------------------------------------------
-// 1. RENDERIZAÇÃO DA APLICAÇÃO (Injeção de Componentes)
-// ----------------------------------------------------------------
+
 document.querySelector('#app').innerHTML = `
+  <div id="preloader" class="fixed inset-0 z-[9999] bg-[#0A0F1A] flex flex-col items-center justify-center font-['Inter']">
+    
+    <div class="overflow-hidden mb-5">
+      <h1 class="preloader-text text-white text-3xl md:text-5xl font-extrabold tracking-tighter translate-y-[100%]">
+        FJ AMBIENTAL
+      </h1>
+    </div>
+
+    <div class="w-48 md:w-64 h-[2px] bg-slate-800 rounded-full overflow-hidden mb-4 relative">
+      <div class="preloader-bar absolute top-0 left-0 h-full w-full bg-emerald-500 scale-x-0 origin-left"></div>
+    </div>
+
+    <div class="overflow-hidden">
+      <span class="preloader-sub text-emerald-400/80 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase translate-y-[100%] block">
+        Consultoria Ambiental e Recursos Hídricos
+
+      </span>
+    </div>
+
+  </div>
+
   ${Header()}
   ${Hero()}
   ${Clients()}
   ${Services()}
   ${Projects()}
-  ${WhatsAppButton()}
+  ${About()} 
+  ${WhatsAppButton()} 
   ${Footer()}
 `;
 
 // ----------------------------------------------------------------
-// 2. FUNÇÕES DE INICIALIZAÇÃO (Lógica & Motion Design)
+// 2. FUNÇÕES DE INICIALIZAÇÃO
 // ----------------------------------------------------------------
 
-/**
- * Inicializa o Menu Mobile:
- * - Animação de entrada suave (Timeline)
- * - Transformação do ícone Hambúrguer para X (Morphing)
- * - Fechamento automático ao clicar em links
- */
 function initMobileMenu() {
   const menuToggle = document.querySelector('#menu-toggle');
   const mobileMenu = document.querySelector('#mobile-menu');
   const hamburgerLines = document.querySelectorAll('.hamburger-line');
-  
-  // Seletores internos para animação em cascata
   const menuLinks = document.querySelectorAll('.menu-link span'); 
   const menuCta = document.querySelector('.menu-cta-wrapper');
-  
-  // Links clicáveis (para fechar o menu ao navegar)
   const clickableLinks = document.querySelectorAll('#mobile-menu a');
 
   if (!menuToggle || !mobileMenu) return;
 
   let isMenuOpen = false;
-
-  // Timeline de Abertura (Pausada inicialmente)
   const menuTl = gsap.timeline({ paused: true });
 
   menuTl
-    .to(mobileMenu, { 
-        duration: 0.45, 
-        autoAlpha: 1, // Controla opacity + visibility automaticamente
-        ease: "power3.inOut" 
-    })
-    .to(menuLinks, {
-        y: 0,
-        duration: 0.6,
-        stagger: 0.08, // Efeito cascata entre os itens
-        ease: "power4.out"
-    }, "-=0.2")
-    .to(menuCta, {
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        ease: "back.out(1.2)"
-    }, "-=0.4");
+    .to(mobileMenu, { duration: 0.45, autoAlpha: 1, ease: "power3.inOut" })
+    .to(menuLinks, { y: 0, duration: 0.6, stagger: 0.08, ease: "power4.out" }, "-=0.2")
+    .to(menuCta, { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.2)" }, "-=0.4");
 
-  // Função Única de Controle (Toggle)
   const toggleMenu = () => {
     isMenuOpen = !isMenuOpen;
-
     if (isMenuOpen) {
-      // --- ABRIR ---
       menuTl.play();
-      document.body.style.overflow = 'hidden'; // Trava o scroll da página
-      
-      // Animação: Transforma Hambúrguer em X
-      // Linha Superior: Desce e gira 45º
-      gsap.to(hamburgerLines[0], { 
-        y: 6, // Ajuste vertical para o centro (depende do gap do CSS)
-        rotate: 45, 
-        duration: 0.3, 
-        ease: "back.out(1.7)" 
-      });
-      // Linha Inferior: Sobe e gira -45º
-      gsap.to(hamburgerLines[1], { 
-        y: -6, // Ajuste vertical para o centro
-        rotate: -45, 
-        duration: 0.3, 
-        ease: "back.out(1.7)" 
-      });
-
+      document.body.style.overflow = 'hidden'; 
+      gsap.to(hamburgerLines[0], { y: 6, rotate: 45, duration: 0.3, ease: "back.out(1.7)" });
+      gsap.to(hamburgerLines[1], { y: -6, rotate: -45, duration: 0.3, ease: "back.out(1.7)" });
     } else {
-      // --- FECHAR ---
       menuTl.reverse();
-      document.body.style.overflow = ''; // Destrava o scroll
-      
-      // Animação: Retorna para Hambúrguer Paralelo
-      gsap.to(hamburgerLines, { 
-        y: 0, 
-        rotate: 0, 
-        duration: 0.3, 
-        ease: "power2.out" 
-      });
+      document.body.style.overflow = ''; 
+      gsap.to(hamburgerLines, { y: 0, rotate: 0, duration: 0.3, ease: "power2.out" });
     }
   };
 
-  // Evento: Clique no Botão Toggle
   menuToggle.addEventListener('click', toggleMenu);
-
-  // Evento: Clique nos Links (Navegação)
   clickableLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      if (isMenuOpen) {
-        toggleMenu(); // Fecha o menu suavemente permitindo o scroll até a seção
-      }
+    link.addEventListener('click', () => { if (isMenuOpen) toggleMenu(); });
+  });
+}
+
+
+function initTextAnimations() {
+  const textElements = document.querySelectorAll('.reveal-text');
+
+  textElements.forEach((el) => {
+    // 1. O SplitType fatia o texto (inclusive lidando com seu <span> interno)
+    const text = new SplitType(el, { types: 'lines, chars' });
+
+    // 2. FORÇA a div principal a ficar visível imediatamente (mata o bug do texto sumido)
+    gsap.set(el, { opacity: 1 });
+
+    // 3. Anima apenas os caracteres (letrinhas)
+    gsap.from(text.chars, {
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%",
+        once: true
+      },
+      duration: 0.8,
+      y: 80,
+      opacity: 0, // Adicionado para dar um efeito de fade junto com a subida
+      stagger: 0.02,
+      ease: "power4.out"
     });
   });
 }
 
-/**
- * Lógica "Temlis" (Header Docking):
- * - Funciona apenas no Desktop.
- * - Reduz o espaçador conforme o scroll, criando efeito de acoplamento.
- */
 function initHeroFusion() {
   const spacer = document.querySelector('#header-spacer');
-  
-  // Verifica se o spacer existe e está visível (evita erros no mobile)
   if (spacer && spacer.offsetParent !== null) {
-    
-    gsap.set(spacer, { transition: 'none' }); // Remove transição CSS para controle total do GSAP
-
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: 'body',      
-        start: 'top top',     
-        end: '+=500', // Distância do scroll para completar o efeito
-        scrub: 0,     // Sincronia perfeita com o dedo/mouse
-        invalidateOnRefresh: true
+        trigger: 'body', start: 'top top', end: '+=500', scrub: 0, invalidateOnRefresh: true
       }
     });
-
-    tl.to(spacer, { 
-      height: 0, 
-      ease: 'none' 
-    });
+    tl.to(spacer, { height: 0, ease: 'none' });
   }
 }
 
-/**
- * Animação de Entrada do Hero:
- * - Foca nos novos elementos (Badge, Título, CTA)
- * - Cria hierarquia visual de carregamento.
- */
+function initPreloader() {
+  // Remova a trava de overflow via JS se usar o 'scrollbar-gutter' no CSS
+  // document.body.style.overflow = 'hidden'; 
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+      const preloader = document.querySelector('#preloader');
+      if (preloader) preloader.style.display = 'none';
+      
+      // Atualiza o GSAP após um pequeno respiro para garantir estabilidade
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+    }
+  });
+
+  tl.to(".preloader-bar", { scaleX: 1, duration: 1.2, ease: "expo.inOut" })
+    .to(".preloader-text, .preloader-sub", { y: "0%", duration: 0.8, ease: "expo.out", stagger: 0.1 }, "-=0.6")
+    .to(".preloader-text, .preloader-sub", { y: "-100%", duration: 0.6, ease: "power3.in", delay: 0.5 })
+    .to(".preloader-bar", { scaleX: 0, transformOrigin: "right", duration: 0.4, ease: "power3.in" }, "-=0.6")
+    
+    // Dispara a Hero um pouco antes da cortina terminar de subir
+    .add(() => {
+      initHeroAnimation();
+    }, "-=0.4") 
+    
+    .to("#preloader", { yPercent: -100, duration: 1.2, ease: "expo.inOut" }, "-=0.2");
+}
+
 function initHeroAnimation() {
-  // Verifica se estamos usando o novo layout do Hero
-  if (document.querySelector('.hero-title')) {
-    const tl = gsap.timeline({ delay: 0.2 });
+  const capsule = document.querySelector('#hero-capsule');
+  const title = document.querySelector('.hero-title') || document.querySelector('h1');
+  const badge = document.querySelector('.hero-badge');
+  const button = document.querySelector('.hero-cta') || document.querySelector('a[href="#contact"]'); 
 
-    tl.from("#hero-capsule", {
-        scale: 0.96,
-        opacity: 0,
-        duration: 1.2,
-        ease: "power3.out"
-    })
-    .from(".hero-badge", {
-        y: 20,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out"
-    }, "-=0.9")
-    .from(".hero-title", {
-        y: 40,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out"
-    }, "-=0.7")
-    .to(".hero-cta", {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        ease: "back.out(1.7)"
-    }, "-=0.5");
-  } 
-  // Fallback para versões antigas (segurança)
-  else if (document.querySelector('.hero-content')) {
-    gsap.from('.hero-content', {
-      opacity: 0, y: 100, duration: 1.2, ease: 'power3.out', delay: 0.2,
-    });
-  }
+  if (!capsule) return;
+
+  const tl = gsap.timeline();
+  
+  // O fromTo garante que a opacidade termine em 1 e a posição em 0
+  tl.fromTo(capsule, { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: "expo.out" });
+  
+  if (badge) tl.fromTo(badge, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, "-=0.8");
+  
+  if (title) tl.fromTo(title, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power4.out" }, "-=0.6");
+  
+  if (button) tl.fromTo(button, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.5)" }, "-=0.4");
 }
 
-/**
- * Inicializa animações genéricas das outras seções (Clients, Services, etc)
- */
-function initScrollAnimations() {
-  const has = (selector) => document.querySelector(selector);
-  const hasAll = (selector) => document.querySelectorAll(selector).length > 0;
+function initProjectsCarousel() {
+  // ELEMENTOS DESKTOP
+  const elements = {
+    section: document.querySelector('#projects-section'),
+    img: document.querySelector('#project-main-image'),
+    title: document.querySelector('#project-title'),
+    desc: document.querySelector('#project-desc'),
+    cat: document.querySelector('#project-category'),
+    loc: document.querySelector('#project-location'),
+    btn: document.querySelector('#project-link-btn'),
+    infoContainer: document.querySelector('#project-info-container'),
+    thumbs: document.querySelectorAll('.project-thumb'),
+    nextBtns: document.querySelectorAll('#next-project'),
+    prevBtns: document.querySelectorAll('#prev-project'),
+  };
 
-  // Clients (Efeito Stagger nos Logos)
-  if (has('#clients') && hasAll('.client-logo')) {
-    gsap.fromTo('.client-logo',
-      { opacity: 0, scale: 0.9 },
-      { opacity: 1, scale: 1, duration: 0.6, stagger: 0.05, ease: 'back.out(1.2)',
-        scrollTrigger: { trigger: '#clients', start: 'top 90%', once: true },
-      }
-    );
+  // 1. LÓGICA MOBILE: Sincronia do Scroll com os Dots
+  const mobileSlider = document.querySelector('#mobile-projects-slider');
+  const mobileDots = document.querySelectorAll('.mobile-dot');
+  const mobileThumbs = document.querySelectorAll('.mobile-thumb'); 
+
+  if (mobileSlider && mobileDots.length) {
+    mobileSlider.addEventListener('scroll', () => {
+      const scrollLeft = mobileSlider.scrollLeft;
+      const cardWidth = mobileSlider.querySelector('.snap-center').offsetWidth + 16;
+      const activeIndex = Math.round(scrollLeft / cardWidth);
+
+      // Atualiza as bolinhas: Ativa = Azul Escuro Largo | Inativas = Verde Menor
+      mobileDots.forEach((dot, i) => {
+        dot.classList.toggle('bg-[#0A0F1A]', i === activeIndex);
+        dot.classList.toggle('w-6', i === activeIndex);
+        dot.classList.toggle('bg-emerald-400', i !== activeIndex);
+        dot.classList.toggle('w-2.5', i !== activeIndex);
+      });
+
+      // Atualiza as fotinhas: Borda acompanhando a cor principal
+      mobileThumbs.forEach((thumb, i) => {
+        thumb.classList.toggle('border-[#0A0F1A]', i === activeIndex);
+        thumb.classList.toggle('opacity-100', i === activeIndex);
+        thumb.classList.toggle('border-transparent', i !== activeIndex);
+        thumb.classList.toggle('opacity-50', i !== activeIndex);
+      });
+    });
   }
 
-  // Services (Cards subindo)
-  if (hasAll('.service-card')) {
+  // Se não existir o layout desktop (telas pequenas puras), aborta o resto
+  if (!elements.img) return;
+
+  // 2. LÓGICA DESKTOP (O GSAP Fade original que você já tinha)
+  let currentIndex = 0;
+  let autoPlayTimer;
+  const AUTO_DELAY = 5;
+
+  function updateProject(index) {
+    const project = projectsData[index];
+    
+    // Atualiza Thumbs Desktop
+    elements.thumbs.forEach((thumb, i) => {
+      thumb.classList.toggle('ring-2', i === index);
+      thumb.classList.toggle('ring-emerald-500', i === index);
+      thumb.classList.toggle('opacity-100', i === index);
+      thumb.classList.toggle('opacity-40', i !== index);
+    });
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        elements.title.innerHTML = project.title; // Usamos innerHTML para respeitar as tags <br/>
+        elements.desc.innerText = project.desc;
+        elements.cat.innerText = project.category;
+        if(elements.loc) elements.loc.innerHTML = project.location;
+        if(elements.btn) elements.btn.setAttribute('href', project.link);
+        elements.img.setAttribute('src', project.img);
+        
+        gsap.to(elements.img, { opacity: 1, scale: 1, duration: 0.5 });
+        gsap.to(elements.infoContainer, { opacity: 1, y: 0, duration: 0.4 });
+        
+        gsap.fromTo([elements.cat, elements.loc, elements.title, elements.desc], 
+          { y: 15, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: "power2.out" }
+        );
+      }
+    });
+
+    tl.to([elements.infoContainer, elements.img], { opacity: 0, y: -10, duration: 0.3, ease: "power2.in" });
+  }
+
+  function next() {
+    currentIndex = (currentIndex + 1) % projectsData.length;
+    updateProject(currentIndex);
+    resetTimer();
+  }
+
+  function prev() {
+    currentIndex = (currentIndex - 1 + projectsData.length) % projectsData.length;
+    updateProject(currentIndex);
+    resetTimer();
+  }
+
+  function resetTimer() {
+    if (autoPlayTimer) autoPlayTimer.kill();
+    autoPlayTimer = gsap.delayedCall(AUTO_DELAY, next);
+  }
+
+  elements.nextBtns.forEach(btn => btn.addEventListener('click', next));
+  elements.prevBtns.forEach(btn => btn.addEventListener('click', prev));
+  elements.thumbs.forEach((thumb, i) => thumb.addEventListener('click', () => { currentIndex = i; updateProject(i); resetTimer(); }));
+
+  resetTimer();
+}
+
+function initScrollAnimations() {
+  if (document.querySelectorAll('.service-card').length > 0) {
     gsap.utils.toArray('.service-card').forEach((card, index) => {
       gsap.from(card, {
         scrollTrigger: { trigger: card, start: 'top 85%' },
         opacity: 0, y: 50, duration: 0.8, delay: index * 0.1, ease: 'power2.out'
       });
     });
+    // No main.js, dentro de initScrollAnimations()
+    gsap.from('.reveal-left', {
+      scrollTrigger: { trigger: '#about', start: 'top 80%' },
+      x: -50,
+      opacity: 0,
+      duration: 1,
+      ease: 'power3.out'
+    });
+
+    gsap.from('.reveal-right div', {
+      scrollTrigger: { trigger: '#about', start: 'top 75%' },
+      scale: 0.9,
+      opacity: 0,
+      duration: 1.2,
+      stagger: 0.2, // Faz as fotos entrarem uma por uma
+      ease: 'back.out(1.7)'
+    });
   }
 
-  // Projects (Scale effect)
-  if (hasAll('.project-card')) {
-    gsap.utils.toArray('.project-card').forEach((card, index) => {
-      gsap.from(card, {
-        scrollTrigger: { trigger: card, start: 'top 85%' },
-        opacity: 0, scale: 0.95, duration: 0.6, delay: index * 0.1, ease: 'power1.out'
-      });
-    });
-  }
+  // --- ANIMAÇÕES DA SECTION SOBRE ---
+   if (document.querySelector('#about')) {
+     
+     // 1. Texto (O gatilho agora é a própria div do texto)
+     gsap.fromTo('.reveal-left', 
+       { opacity: 0, x: -40 },
+       { 
+         scrollTrigger: { 
+           trigger: '.reveal-left', // Correção crucial aqui
+           start: 'top 85%', 
+           once: true 
+         },
+         opacity: 1, 
+         x: 0, 
+         duration: 1, 
+         ease: 'power2.out' 
+       }
+     );
 
-  // WhatsApp Button (Pulsar e Entrada)
-  if (has('#whatsapp-button')) {
-    gsap.from('#whatsapp-button', { 
-      opacity: 0, y: 50, duration: 1, delay: 2, ease: 'elastic.out(1, 0.7)' 
-    });
-    // Animação contínua (Pulse suave)
-    gsap.to('#whatsapp-button', { 
-      scale: 1.05, duration: 1.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 3 
-    });
-  }
+     // 2. Fotos e Cartão (O gatilho agora é a coluna da direita)
+     gsap.fromTo('.about-card', 
+       { opacity: 0, y: 40 },
+       {
+         scrollTrigger: { 
+           trigger: '.reveal-right', // Correção aqui
+           start: 'top 80%', 
+           once: true 
+         },
+         opacity: 1, 
+         y: 0, 
+         duration: 1, 
+         stagger: 0.2, 
+         ease: 'power2.out'
+       }
+     );
+
+     // 3. Contadores Numericos
+     gsap.utils.toArray('.animate-number').forEach(el => {
+       const target = parseInt(el.getAttribute('data-target'));
+       gsap.fromTo(el, 
+         { innerHTML: 0 },
+         {
+           scrollTrigger: { 
+             trigger: '.reveal-left', // Correção aqui
+             start: 'top 85%', 
+             once: true 
+           },
+           innerHTML: target,
+           duration: 2.5,
+           snap: { innerHTML: 1 }, 
+           ease: 'power2.out'
+         }
+       );
+     });
+   }
+
 }
 
-// ----------------------------------------------------------------
-// 3. EXECUÇÃO
-// ----------------------------------------------------------------
-// Usamos DOMContentLoaded para garantir que o HTML injetado esteja pronto
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initHeroFusion();
-    initHeroAnimation();
+    initPreloader();
     initScrollAnimations();
+    initProjectsCarousel(); 
 });
+
+window.addEventListener('DOMContentLoaded', initTextAnimations);
