@@ -15,20 +15,20 @@ gsap.registerPlugin(ScrollTrigger);
 
 
 document.querySelector('#app').innerHTML = `
-  <div id="preloader" class="fixed inset-0 z-[9999] bg-[#0A0F1A] flex flex-col items-center justify-center font-['Inter']">
+  <div id="preloader" class="fixed inset-0 z-9999 bg-[#0A0F1A] flex flex-col items-center justify-center font-['Inter']">
     
     <div class="overflow-hidden mb-5">
-      <h1 class="preloader-text text-white text-3xl md:text-5xl font-extrabold tracking-tighter translate-y-[100%]">
+      <h1 class="preloader-text text-white text-3xl md:text-5xl font-extrabold tracking-tighter translate-y-full">
         FJ AMBIENTAL
       </h1>
     </div>
 
-    <div class="w-48 md:w-64 h-[2px] bg-slate-800 rounded-full overflow-hidden mb-4 relative">
+    <div class="w-48 md:w-64 h-0.5 bg-slate-800 rounded-full overflow-hidden mb-4 relative">
       <div class="preloader-bar absolute top-0 left-0 h-full w-full bg-emerald-500 scale-x-0 origin-left"></div>
     </div>
 
     <div class="overflow-hidden">
-      <span class="preloader-sub text-emerald-400/80 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase translate-y-[100%] block">
+      <span class="preloader-sub text-emerald-400/80 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase translate-y-full block">
         Consultoria Ambiental e Recursos Hídricos
 
       </span>
