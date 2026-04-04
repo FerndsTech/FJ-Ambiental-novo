@@ -54,7 +54,7 @@ function initMobileMenu() {
   const menuToggle = document.querySelector('#menu-toggle');
   const mobileMenu = document.querySelector('#mobile-menu');
   const hamburgerLines = document.querySelectorAll('.hamburger-line');
-  const menuLinks = document.querySelectorAll('.menu-link span'); 
+  const menuLinks = document.querySelectorAll('.menu-link span');
   const menuCta = document.querySelector('.menu-cta-wrapper');
   const clickableLinks = document.querySelectorAll('#mobile-menu a');
 
@@ -72,12 +72,12 @@ function initMobileMenu() {
     isMenuOpen = !isMenuOpen;
     if (isMenuOpen) {
       menuTl.play();
-      document.body.style.overflow = 'hidden'; 
+      document.body.style.overflow = 'hidden';
       gsap.to(hamburgerLines[0], { y: 6, rotate: 45, duration: 0.3, ease: "back.out(1.7)" });
       gsap.to(hamburgerLines[1], { y: -6, rotate: -45, duration: 0.3, ease: "back.out(1.7)" });
     } else {
       menuTl.reverse();
-      document.body.style.overflow = ''; 
+      document.body.style.overflow = '';
       gsap.to(hamburgerLines, { y: 0, rotate: 0, duration: 0.3, ease: "power2.out" });
     }
   };
@@ -128,14 +128,12 @@ function initHeroFusion() {
 }
 
 function initPreloader() {
-  // Remova a trava de overflow via JS se usar o 'scrollbar-gutter' no CSS
-  // document.body.style.overflow = 'hidden'; 
 
   const tl = gsap.timeline({
     onComplete: () => {
       const preloader = document.querySelector('#preloader');
       if (preloader) preloader.style.display = 'none';
-      
+
       // Atualiza o GSAP após um pequeno respiro para garantir estabilidade
       setTimeout(() => {
         ScrollTrigger.refresh();
@@ -147,33 +145,94 @@ function initPreloader() {
     .to(".preloader-text, .preloader-sub", { y: "0%", duration: 0.8, ease: "expo.out", stagger: 0.1 }, "-=0.6")
     .to(".preloader-text, .preloader-sub", { y: "-100%", duration: 0.6, ease: "power3.in", delay: 0.5 })
     .to(".preloader-bar", { scaleX: 0, transformOrigin: "right", duration: 0.4, ease: "power3.in" }, "-=0.6")
-    
+
     // Dispara a Hero um pouco antes da cortina terminar de subir
     .add(() => {
       initHeroAnimation();
-    }, "-=0.4") 
-    
+    }, "-=0.4")
+
     .to("#preloader", { yPercent: -100, duration: 1.2, ease: "expo.inOut" }, "-=0.2");
 }
 
 function initHeroAnimation() {
   const capsule = document.querySelector('#hero-capsule');
-  const title = document.querySelector('.hero-title') || document.querySelector('h1');
+  const title = document.querySelector('.hero-title');
   const badge = document.querySelector('.hero-badge');
-  const button = document.querySelector('.hero-cta') || document.querySelector('a[href="#contact"]'); 
+  const description = document.querySelector('.hero-description');
+  const button = document.querySelector('.hero-cta');
+  const floatingCards = document.querySelectorAll('.hero-f-card');
 
   if (!capsule) return;
 
+  // 1. Preparação: SplitType na Subheadline (Revelação por linhas)
+  const splitDesc = new SplitType(description, { types: 'lines' });
+  
+  // Garantimos que o container do texto esteja visível, mas as linhas ocultas inicialmente
+  gsap.set(description, { opacity: 1 }); 
+
   const tl = gsap.timeline();
-  
-  // O fromTo garante que a opacidade termine em 1 e a posição em 0
-  tl.fromTo(capsule, { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.2, ease: "expo.out" });
-  
-  if (badge) tl.fromTo(badge, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, "-=0.8");
-  
-  if (title) tl.fromTo(title, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power4.out" }, "-=0.6");
-  
-  if (button) tl.fromTo(button, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "back.out(1.5)" }, "-=0.4");
+
+  // 2. Sequência de Entrada (Orquestração de Motion Design)
+  tl.fromTo(capsule, 
+    { scale: 0.95, opacity: 0 }, 
+    { scale: 1, opacity: 1, duration: 1.4, ease: "expo.out" }
+  );
+
+  if (badge) {
+    tl.fromTo(badge, 
+      { y: 20, opacity: 0 }, 
+      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, 
+      "-=1"
+    );
+  }
+
+  if (title) {
+    tl.fromTo(title, 
+      { y: 40, opacity: 0 }, 
+      { y: 0, opacity: 1, duration: 1.2, ease: "power4.out" }, 
+      "-=0.8"
+    );
+  }
+
+  // Animação das linhas da Subheadline (Efeito Premium)
+  if (splitDesc.lines) {
+    tl.from(splitDesc.lines, {
+      y: 20,
+      opacity: 0,
+      stagger: 0.1,
+      duration: 0.8,
+      ease: "power3.out"
+    }, "-=0.8");
+  }
+
+  if (button) {
+    tl.fromTo(button, 
+      { y: 20, opacity: 0 }, 
+      { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.5)" }, 
+      "-=0.6"
+    );
+  }
+
+  // 3. Entrada e Loop dos Floating Cards
+  if (floatingCards.length > 0) {
+    tl.fromTo(floatingCards, 
+      { y: 40, opacity: 0, scale: 0.9 }, 
+      { y: 0, opacity: 1, scale: 1, duration: 1.2, stagger: 0.2, ease: "expo.out" }, 
+      "-=1.2"
+    );
+
+    // Loop de flutuação infinita com offsets diferentes para naturalidade
+    floatingCards.forEach((card, i) => {
+      gsap.to(card, {
+        y: i % 2 === 0 ? -15 : 15,
+        duration: 4 + i,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: i * 0.2
+      });
+    });
+  }
 }
 
 function initProjectsCarousel() {
@@ -195,7 +254,7 @@ function initProjectsCarousel() {
   // 1. LÓGICA MOBILE: Sincronia do Scroll com os Dots
   const mobileSlider = document.querySelector('#mobile-projects-slider');
   const mobileDots = document.querySelectorAll('.mobile-dot');
-  const mobileThumbs = document.querySelectorAll('.mobile-thumb'); 
+  const mobileThumbs = document.querySelectorAll('.mobile-thumb');
 
   if (mobileSlider && mobileDots.length) {
     mobileSlider.addEventListener('scroll', () => {
@@ -231,7 +290,7 @@ function initProjectsCarousel() {
 
   function updateProject(index) {
     const project = projectsData[index];
-    
+
     // Atualiza Thumbs Desktop
     elements.thumbs.forEach((thumb, i) => {
       thumb.classList.toggle('ring-2', i === index);
@@ -245,14 +304,14 @@ function initProjectsCarousel() {
         elements.title.innerHTML = project.title; // Usamos innerHTML para respeitar as tags <br/>
         elements.desc.innerText = project.desc;
         elements.cat.innerText = project.category;
-        if(elements.loc) elements.loc.innerHTML = project.location;
-        if(elements.btn) elements.btn.setAttribute('href', project.link);
+        if (elements.loc) elements.loc.innerHTML = project.location;
+        if (elements.btn) elements.btn.setAttribute('href', project.link);
         elements.img.setAttribute('src', project.img);
-        
+
         gsap.to(elements.img, { opacity: 1, scale: 1, duration: 0.5 });
         gsap.to(elements.infoContainer, { opacity: 1, y: 0, duration: 0.4 });
-        
-        gsap.fromTo([elements.cat, elements.loc, elements.title, elements.desc], 
+
+        gsap.fromTo([elements.cat, elements.loc, elements.title, elements.desc],
           { y: 15, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: "power2.out" }
         );
@@ -314,69 +373,69 @@ function initScrollAnimations() {
   }
 
   // --- ANIMAÇÕES DA SECTION SOBRE ---
-   if (document.querySelector('#about')) {
-     
-     // 1. Texto (O gatilho agora é a própria div do texto)
-     gsap.fromTo('.reveal-left', 
-       { opacity: 0, x: -40 },
-       { 
-         scrollTrigger: { 
-           trigger: '.reveal-left', // Correção crucial aqui
-           start: 'top 85%', 
-           once: true 
-         },
-         opacity: 1, 
-         x: 0, 
-         duration: 1, 
-         ease: 'power2.out' 
-       }
-     );
+  if (document.querySelector('#about')) {
 
-     // 2. Fotos e Cartão (O gatilho agora é a coluna da direita)
-     gsap.fromTo('.about-card', 
-       { opacity: 0, y: 40 },
-       {
-         scrollTrigger: { 
-           trigger: '.reveal-right', // Correção aqui
-           start: 'top 80%', 
-           once: true 
-         },
-         opacity: 1, 
-         y: 0, 
-         duration: 1, 
-         stagger: 0.2, 
-         ease: 'power2.out'
-       }
-     );
+    // 1. Texto (O gatilho agora é a própria div do texto)
+    gsap.fromTo('.reveal-left',
+      { opacity: 0, x: -40 },
+      {
+        scrollTrigger: {
+          trigger: '.reveal-left', // Correção crucial aqui
+          start: 'top 85%',
+          once: true
+        },
+        opacity: 1,
+        x: 0,
+        duration: 1,
+        ease: 'power2.out'
+      }
+    );
 
-     // 3. Contadores Numericos
-     gsap.utils.toArray('.animate-number').forEach(el => {
-       const target = parseInt(el.getAttribute('data-target'));
-       gsap.fromTo(el, 
-         { innerHTML: 0 },
-         {
-           scrollTrigger: { 
-             trigger: '.reveal-left', // Correção aqui
-             start: 'top 85%', 
-             once: true 
-           },
-           innerHTML: target,
-           duration: 2.5,
-           snap: { innerHTML: 1 }, 
-           ease: 'power2.out'
-         }
-       );
-     });
-   }
+    // 2. Fotos e Cartão (O gatilho agora é a coluna da direita)
+    gsap.fromTo('.about-card',
+      { opacity: 0, y: 40 },
+      {
+        scrollTrigger: {
+          trigger: '.reveal-right', // Correção aqui
+          start: 'top 80%',
+          once: true
+        },
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        stagger: 0.2,
+        ease: 'power2.out'
+      }
+    );
+
+    // 3. Contadores Numericos
+    gsap.utils.toArray('.animate-number').forEach(el => {
+      const target = parseInt(el.getAttribute('data-target'));
+      gsap.fromTo(el,
+        { innerHTML: 0 },
+        {
+          scrollTrigger: {
+            trigger: '.reveal-left', // Correção aqui
+            start: 'top 85%',
+            once: true
+          },
+          innerHTML: target,
+          duration: 2.5,
+          snap: { innerHTML: 1 },
+          ease: 'power2.out'
+        }
+      );
+    });
+  }
 
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    initMobileMenu();
-    initHeroFusion();
-    initPreloader();
-    initScrollAnimations();
-    initProjectsCarousel(); 
+  initMobileMenu();
+  initHeroFusion();
+  initPreloader();
+  initScrollAnimations();
+  initProjectsCarousel();
 });
 
 window.addEventListener('DOMContentLoaded', initTextAnimations);
