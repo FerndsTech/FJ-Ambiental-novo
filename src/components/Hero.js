@@ -53,46 +53,64 @@ export function Hero() {
 
         <!-- Floating Cards — rodapé interno da cápsula -->
         <div class="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-30
-                    flex flex-col sm:flex-row gap-3 md:gap-4
+                    flex flex-row gap-3 md:gap-4
                     w-full max-w-3xl px-4 md:px-6
                     pointer-events-none">
 
           <!-- Card 1: +10 Anos -->
-          <div class="hero-f-card flex-1 bg-white/10 backdrop-blur-2xl border border-white/15 p-4 md:p-5 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex items-center gap-3 opacity-0 pointer-events-auto">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-              </svg>
+          <div class="hero-f-card flex-1 bg-transparent backdrop-blur-sm border border-white/8
+                      px-4 py-6 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] 
+                      flex flex-col items-center gap-4 opacity-0 pointer-events-auto">
+            
+            <div class="relative w-[120px] h-[120px] flex items-center justify-center shrink-0">
+              <div class="gauge-years absolute inset-0 w-full h-full"></div>
+              <div class="absolute inset-0 z-10 flex flex-col items-center justify-center">
+                <span class="gauge-years-label text-white font-black text-2xl leading-none tracking-tight">+0</span>
+                <span class="text-white/50 text-[10px] font-bold uppercase tracking-widest mt-1">anos</span>
+              </div>
             </div>
-            <div class="text-left">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-400 font-bold leading-none mb-1">Experiência</p>
-              <p class="text-white text-sm font-semibold tracking-tight">+10 Anos de Atuação</p>
+
+            <div class="text-center">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-bold leading-none mb-1.5">Experiência</p>
+              <p class="text-white text-sm font-semibold tracking-tight leading-snug">Anos de Atuação</p>
             </div>
           </div>
 
           <!-- Card 2: +500 Projetos -->
-          <div class="hero-f-card flex-1 bg-white/10 backdrop-blur-2xl border border-white/15 p-4 md:p-5 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex items-center gap-3 opacity-0 pointer-events-auto">
-            <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center border border-blue-500/30 shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
+          <div class="hero-f-card flex-1 bg-transparent backdrop-blur-sm border border-white/8
+                      px-4 py-6 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] 
+                      flex flex-col items-center gap-4 opacity-0 pointer-events-auto">
+            
+            <div class="relative w-[120px] h-[120px] flex items-center justify-center shrink-0">
+              <div class="gauge-projects absolute inset-0 w-full h-full"></div>
+              <div class="absolute inset-0 z-10 flex flex-col items-center justify-center">
+                <span class="gauge-projects-label text-white font-black text-2xl leading-none tracking-tight">+0</span>
+                <span class="text-white/50 text-[10px] font-bold uppercase tracking-widest mt-1">projetos</span>
+              </div>
             </div>
-            <div class="text-left">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-blue-400 font-bold leading-none mb-1">Portfólio</p>
-              <p class="text-white text-sm font-semibold tracking-tight">+500 Projetos Entregues</p>
+
+            <div class="text-center">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-bold leading-none mb-1.5">Portfólio</p>
+              <p class="text-white text-sm font-semibold tracking-tight leading-snug">Projetos Entregues</p>
             </div>
           </div>
 
-          <!-- Card 3: Padrões ABNT -->
-          <div class="hero-f-card flex-1 bg-white/10 backdrop-blur-2xl border border-white/15 p-4 md:p-5 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] flex items-center gap-3 opacity-0 pointer-events-auto">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
+          <!-- Card 3: Conformidade ABNT -->
+          <div class="hero-f-card flex-1 bg-transparent backdrop-blur-sm border border-white/8
+                      px-4 py-6 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] 
+                      flex flex-col items-center gap-4 opacity-0 pointer-events-auto">
+            
+            <div class="relative w-[120px] h-[120px] flex items-center justify-center shrink-0">
+              <div class="gauge-abnt absolute inset-0 w-full h-full"></div>
+              <div class="absolute inset-0 z-10 flex flex-col items-center justify-center">
+                <span class="gauge-abnt-label text-white font-black text-2xl leading-none tracking-tight">0%</span>
+                <span class="text-white/50 text-[10px] font-bold uppercase tracking-widest mt-1">ABNT</span>
+              </div>
             </div>
-            <div class="text-left">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-400 font-bold leading-none mb-1">Conformidade</p>
-              <p class="text-white text-sm font-semibold tracking-tight">Padrões Técnicos ABNT</p>
+
+            <div class="text-center">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-white/60 font-bold leading-none mb-1.5">Conformidade</p>
+              <p class="text-white text-sm font-semibold tracking-tight leading-snug">Padrões Técnicos ABNT</p>
             </div>
           </div>
 

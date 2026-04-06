@@ -47,6 +47,55 @@ svg {
 }
 
 /* ==========================================
+   Floatas Cards Hero
+   ========================================== */
+
+@property --p-years {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --p-projects {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --p-abnt {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+.gauge-years {
+  background: conic-gradient(rgba(255, 255, 255, 0.7) calc(var(--p-years) * 1%),
+      rgba(255, 255, 255, 0.08) 0%);
+  mask: radial-gradient(farthest-side, transparent 78%, black 79%);
+  -webkit-mask: radial-gradient(farthest-side, transparent 89%, black 90%);
+  border-radius: 50%;
+  transition: --p-years 1.8s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.gauge-projects {
+  background: conic-gradient(rgba(255, 255, 255, 0.7) calc(var(--p-projects) * 1%),
+      rgba(255, 255, 255, 0.08) 0%);
+  mask: radial-gradient(farthest-side, transparent 78%, black 79%);
+  -webkit-mask: radial-gradient(farthest-side, transparent 89%, black 90%);
+  border-radius: 50%;
+  transition: --p-projects 2.2s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.gauge-abnt {
+  background: conic-gradient(rgba(255, 255, 255, 0.7) calc(var(--p-abnt) * 1%),
+      rgba(255, 255, 255, 0.08) 0%);
+  mask: radial-gradient(farthest-side, transparent 78%, black 79%);
+  -webkit-mask: radial-gradient(farthest-side, transparent 89%, black 90%);
+  border-radius: 50%;
+  transition: --p-abnt 2.0s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* ==========================================
    3. SplitText Gsap
    ========================================== */
 

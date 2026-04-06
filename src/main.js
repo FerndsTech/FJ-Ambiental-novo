@@ -13,27 +13,21 @@ import SplitType from 'split-type';
 
 gsap.registerPlugin(ScrollTrigger);
 
-
 document.querySelector('#app').innerHTML = `
   <div id="preloader" class="fixed inset-0 z-9999 bg-[#0A0F1A] flex flex-col items-center justify-center font-['Inter']">
-    
     <div class="overflow-hidden mb-5">
       <h1 class="preloader-text text-white text-3xl md:text-5xl font-extrabold tracking-tighter translate-y-full">
         FJ AMBIENTAL
       </h1>
     </div>
-
     <div class="w-48 md:w-64 h-0.5 bg-slate-800 rounded-full overflow-hidden mb-4 relative">
       <div class="preloader-bar absolute top-0 left-0 h-full w-full bg-emerald-500 scale-x-0 origin-left"></div>
     </div>
-
     <div class="overflow-hidden">
       <span class="preloader-sub text-emerald-400/80 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase translate-y-full block">
         Consultoria Ambiental e Recursos Hídricos
-
       </span>
     </div>
-
   </div>
 
   ${Header()}
@@ -41,13 +35,13 @@ document.querySelector('#app').innerHTML = `
   ${Clients()}
   ${Services()}
   ${Projects()}
-  ${About()} 
-  ${WhatsAppButton()} 
+  ${About()}
+  ${WhatsAppButton()}
   ${Footer()}
 `;
 
 // ----------------------------------------------------------------
-// 2. FUNÇÕES DE INICIALIZAÇÃO
+// FUNÇÕES DE INICIALIZAÇÃO
 // ----------------------------------------------------------------
 
 function initMobileMenu() {
@@ -88,29 +82,14 @@ function initMobileMenu() {
   });
 }
 
-
 function initTextAnimations() {
   const textElements = document.querySelectorAll('.reveal-text');
-
   textElements.forEach((el) => {
-    // 1. O SplitType fatia o texto (inclusive lidando com seu <span> interno)
     const text = new SplitType(el, { types: 'lines, chars' });
-
-    // 2. FORÇA a div principal a ficar visível imediatamente (mata o bug do texto sumido)
     gsap.set(el, { opacity: 1 });
-
-    // 3. Anima apenas os caracteres (letrinhas)
     gsap.from(text.chars, {
-      scrollTrigger: {
-        trigger: el,
-        start: "top 85%",
-        once: true
-      },
-      duration: 0.8,
-      y: 80,
-      opacity: 0, // Adicionado para dar um efeito de fade junto com a subida
-      stagger: 0.02,
-      ease: "power4.out"
+      scrollTrigger: { trigger: el, start: "top 85%", once: true },
+      duration: 0.8, y: 80, opacity: 0, stagger: 0.02, ease: "power4.out"
     });
   });
 }
@@ -128,16 +107,15 @@ function initHeroFusion() {
 }
 
 function initPreloader() {
-
   const tl = gsap.timeline({
     onComplete: () => {
       const preloader = document.querySelector('#preloader');
       if (preloader) preloader.style.display = 'none';
 
-      // Atualiza o GSAP após um pequeno respiro para garantir estabilidade
       setTimeout(() => {
         ScrollTrigger.refresh();
-      }, 100);
+        initArcAnimations();
+      }, 150);
     }
   });
 
@@ -145,98 +123,109 @@ function initPreloader() {
     .to(".preloader-text, .preloader-sub", { y: "0%", duration: 0.8, ease: "expo.out", stagger: 0.1 }, "-=0.6")
     .to(".preloader-text, .preloader-sub", { y: "-100%", duration: 0.6, ease: "power3.in", delay: 0.5 })
     .to(".preloader-bar", { scaleX: 0, transformOrigin: "right", duration: 0.4, ease: "power3.in" }, "-=0.6")
-
-    // Dispara a Hero um pouco antes da cortina terminar de subir
-    .add(() => {
-      initHeroAnimation();
-    }, "-=0.4")
-
+    .add(() => { initHeroAnimation(); }, "-=0.4")
     .to("#preloader", { yPercent: -100, duration: 1.2, ease: "expo.inOut" }, "-=0.2");
 }
 
+function initArcAnimations() {
+  const gaugeYears    = document.querySelector('.gauge-years');
+  const gaugeProjects = document.querySelector('.gauge-projects');
+  const gaugeAbnt     = document.querySelector('.gauge-abnt');
+  const labelYears    = document.querySelector('.gauge-years-label');
+  const labelProjects = document.querySelector('.gauge-projects-label');
+  const labelAbnt     = document.querySelector('.gauge-abnt-label');
+
+  if (!gaugeYears || !gaugeProjects || !gaugeAbnt) return;
+
+  function animateNumber(el, target, duration, prefix = '', suffix = '') {
+    let startTime = null;
+    function tick(now) {
+      if (!startTime) startTime = now;
+      const elapsed = (now - startTime) / 1000;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = prefix + Math.round(target * eased) + suffix;
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // Disparar no próximo frame — garante que o CSS já foi aplicado
+  requestAnimationFrame(() => {
+    // Card 1 — +10 Anos (68%)
+    gaugeYears.style.setProperty('--p-years', '100');
+    animateNumber(labelYears, 10, 1.8, '+');
+
+    // Card 2 — +500 Projetos (83%)
+   gaugeProjects.style.setProperty('--p-projects', '100');
+    animateNumber(labelProjects, 500, 2.2, '+');
+
+    // Card 3 — 100% ABNT
+    gaugeAbnt.style.setProperty('--p-abnt', '100');
+    animateNumber(labelAbnt, 100, 2.0, '', '%');
+  });
+}
+
 function initHeroAnimation() {
-  const capsule = document.querySelector('#hero-capsule');
-  const title = document.querySelector('.hero-title');
-  const badge = document.querySelector('.hero-badge');
+  const capsule     = document.querySelector('#hero-capsule');
+  const title       = document.querySelector('.hero-title');
+  const badge       = document.querySelector('.hero-badge');
   const description = document.querySelector('.hero-description');
-  const button = document.querySelector('.hero-cta');
+  const button      = document.querySelector('.hero-cta');
   const floatingCards = document.querySelectorAll('.hero-f-card');
 
   if (!capsule) return;
 
-  // 1. Preparação: SplitType na Subheadline (Revelação por linhas)
   const splitDesc = new SplitType(description, { types: 'lines' });
-  
-  // Garantimos que o container do texto esteja visível, mas as linhas ocultas inicialmente
-  gsap.set(description, { opacity: 1 }); 
+  gsap.set(description, { opacity: 1 });
 
   const tl = gsap.timeline();
 
-  // 2. Sequência de Entrada (Orquestração de Motion Design)
-  tl.fromTo(capsule, 
-    { scale: 0.95, opacity: 0 }, 
-    { scale: 1, opacity: 1, duration: 1.4, ease: "expo.out" }
+  tl.fromTo(capsule,
+    { scale: 0.95, opacity: 0 },
+    { scale: 1, opacity: 1, duration: 1.4, ease: 'expo.out' }
   );
 
   if (badge) {
-    tl.fromTo(badge, 
-      { y: 20, opacity: 0 }, 
-      { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, 
-      "-=1"
+    tl.fromTo(badge,
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' },
+      '-=1'
     );
   }
 
   if (title) {
-    tl.fromTo(title, 
-      { y: 40, opacity: 0 }, 
-      { y: 0, opacity: 1, duration: 1.2, ease: "power4.out" }, 
-      "-=0.8"
+    tl.fromTo(title,
+      { y: 40, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out' },
+      '-=0.8'
     );
   }
 
-  // Animação das linhas da Subheadline (Efeito Premium)
   if (splitDesc.lines) {
     tl.from(splitDesc.lines, {
-      y: 20,
-      opacity: 0,
-      stagger: 0.1,
-      duration: 0.8,
-      ease: "power3.out"
-    }, "-=0.8");
+      y: 20, opacity: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out'
+    }, '-=0.8');
   }
 
   if (button) {
-    tl.fromTo(button, 
-      { y: 20, opacity: 0 }, 
-      { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.5)" }, 
-      "-=0.6"
+    tl.fromTo(button,
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'back.out(1.5)' },
+      '-=0.6'
     );
   }
 
-  // 3. Entrada e Loop dos Floating Cards
   if (floatingCards.length > 0) {
-    tl.fromTo(floatingCards, 
-      { y: 40, opacity: 0, scale: 0.9 }, 
-      { y: 0, opacity: 1, scale: 1, duration: 1.2, stagger: 0.2, ease: "expo.out" }, 
-      "-=1.2"
+    tl.fromTo(floatingCards,
+      { y: 30, opacity: 0, scale: 0.96 },
+      { y: 0, opacity: 1, scale: 1, duration: 0.9, stagger: 0.12, ease: 'expo.out' },
+      '-=0.4'
     );
-
-    // Loop de flutuação infinita com offsets diferentes para naturalidade
-    floatingCards.forEach((card, i) => {
-      gsap.to(card, {
-        y: i % 2 === 0 ? -15 : 15,
-        duration: 4 + i,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: i * 0.2
-      });
-    });
   }
 }
 
 function initProjectsCarousel() {
-  // ELEMENTOS DESKTOP
   const elements = {
     section: document.querySelector('#projects-section'),
     img: document.querySelector('#project-main-image'),
@@ -251,7 +240,6 @@ function initProjectsCarousel() {
     prevBtns: document.querySelectorAll('#prev-project'),
   };
 
-  // 1. LÓGICA MOBILE: Sincronia do Scroll com os Dots
   const mobileSlider = document.querySelector('#mobile-projects-slider');
   const mobileDots = document.querySelectorAll('.mobile-dot');
   const mobileThumbs = document.querySelectorAll('.mobile-thumb');
@@ -262,7 +250,6 @@ function initProjectsCarousel() {
       const cardWidth = mobileSlider.querySelector('.snap-center').offsetWidth + 16;
       const activeIndex = Math.round(scrollLeft / cardWidth);
 
-      // Atualiza as bolinhas: Ativa = Azul Escuro Largo | Inativas = Verde Menor
       mobileDots.forEach((dot, i) => {
         dot.classList.toggle('bg-[#0A0F1A]', i === activeIndex);
         dot.classList.toggle('w-6', i === activeIndex);
@@ -270,7 +257,6 @@ function initProjectsCarousel() {
         dot.classList.toggle('w-2.5', i !== activeIndex);
       });
 
-      // Atualiza as fotinhas: Borda acompanhando a cor principal
       mobileThumbs.forEach((thumb, i) => {
         thumb.classList.toggle('border-[#0A0F1A]', i === activeIndex);
         thumb.classList.toggle('opacity-100', i === activeIndex);
@@ -280,10 +266,8 @@ function initProjectsCarousel() {
     });
   }
 
-  // Se não existir o layout desktop (telas pequenas puras), aborta o resto
   if (!elements.img) return;
 
-  // 2. LÓGICA DESKTOP (O GSAP Fade original que você já tinha)
   let currentIndex = 0;
   let autoPlayTimer;
   const AUTO_DELAY = 5;
@@ -291,7 +275,6 @@ function initProjectsCarousel() {
   function updateProject(index) {
     const project = projectsData[index];
 
-    // Atualiza Thumbs Desktop
     elements.thumbs.forEach((thumb, i) => {
       thumb.classList.toggle('ring-2', i === index);
       thumb.classList.toggle('ring-emerald-500', i === index);
@@ -301,7 +284,7 @@ function initProjectsCarousel() {
 
     const tl = gsap.timeline({
       onComplete: () => {
-        elements.title.innerHTML = project.title; // Usamos innerHTML para respeitar as tags <br/>
+        elements.title.innerHTML = project.title;
         elements.desc.innerText = project.desc;
         elements.cat.innerText = project.category;
         if (elements.loc) elements.loc.innerHTML = project.location;
@@ -310,7 +293,6 @@ function initProjectsCarousel() {
 
         gsap.to(elements.img, { opacity: 1, scale: 1, duration: 0.5 });
         gsap.to(elements.infoContainer, { opacity: 1, y: 0, duration: 0.4 });
-
         gsap.fromTo([elements.cat, elements.loc, elements.title, elements.desc],
           { y: 15, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: "power2.out" }
@@ -340,7 +322,11 @@ function initProjectsCarousel() {
 
   elements.nextBtns.forEach(btn => btn.addEventListener('click', next));
   elements.prevBtns.forEach(btn => btn.addEventListener('click', prev));
-  elements.thumbs.forEach((thumb, i) => thumb.addEventListener('click', () => { currentIndex = i; updateProject(i); resetTimer(); }));
+  elements.thumbs.forEach((thumb, i) => thumb.addEventListener('click', () => {
+    currentIndex = i;
+    updateProject(i);
+    resetTimer();
+  }));
 
   resetTimer();
 }
@@ -353,81 +339,36 @@ function initScrollAnimations() {
         opacity: 0, y: 50, duration: 0.8, delay: index * 0.1, ease: 'power2.out'
       });
     });
-    // No main.js, dentro de initScrollAnimations()
-    gsap.from('.reveal-left', {
-      scrollTrigger: { trigger: '#about', start: 'top 80%' },
-      x: -50,
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out'
-    });
-
-    gsap.from('.reveal-right div', {
-      scrollTrigger: { trigger: '#about', start: 'top 75%' },
-      scale: 0.9,
-      opacity: 0,
-      duration: 1.2,
-      stagger: 0.2, // Faz as fotos entrarem uma por uma
-      ease: 'back.out(1.7)'
-    });
   }
 
-  // --- ANIMAÇÕES DA SECTION SOBRE ---
   if (document.querySelector('#about')) {
-
-    // 1. Texto (O gatilho agora é a própria div do texto)
     gsap.fromTo('.reveal-left',
       { opacity: 0, x: -40 },
       {
-        scrollTrigger: {
-          trigger: '.reveal-left', // Correção crucial aqui
-          start: 'top 85%',
-          once: true
-        },
-        opacity: 1,
-        x: 0,
-        duration: 1,
-        ease: 'power2.out'
+        scrollTrigger: { trigger: '.reveal-left', start: 'top 85%', once: true },
+        opacity: 1, x: 0, duration: 1, ease: 'power2.out'
       }
     );
 
-    // 2. Fotos e Cartão (O gatilho agora é a coluna da direita)
     gsap.fromTo('.about-card',
       { opacity: 0, y: 40 },
       {
-        scrollTrigger: {
-          trigger: '.reveal-right', // Correção aqui
-          start: 'top 80%',
-          once: true
-        },
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: 'power2.out'
+        scrollTrigger: { trigger: '.reveal-right', start: 'top 80%', once: true },
+        opacity: 1, y: 0, duration: 1, stagger: 0.2, ease: 'power2.out'
       }
     );
 
-    // 3. Contadores Numericos
     gsap.utils.toArray('.animate-number').forEach(el => {
       const target = parseInt(el.getAttribute('data-target'));
       gsap.fromTo(el,
         { innerHTML: 0 },
         {
-          scrollTrigger: {
-            trigger: '.reveal-left', // Correção aqui
-            start: 'top 85%',
-            once: true
-          },
-          innerHTML: target,
-          duration: 2.5,
-          snap: { innerHTML: 1 },
-          ease: 'power2.out'
+          scrollTrigger: { trigger: '.reveal-left', start: 'top 85%', once: true },
+          innerHTML: target, duration: 2.5, snap: { innerHTML: 1 }, ease: 'power2.out'
         }
       );
     });
   }
-
 }
 
 document.addEventListener('DOMContentLoaded', () => {
