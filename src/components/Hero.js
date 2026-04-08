@@ -16,6 +16,7 @@ export function Hero() {
             class="w-full h-full object-cover scale-105"
             autoplay muted loop playsinline preload="metadata" poster="${heroPoster}"
             aria-hidden="true"
+            
           >
             <source src="/img/video-hero2.mp4" type="video/mp4">
             <source src="/img/video-hero.webm" type="video/webm">
